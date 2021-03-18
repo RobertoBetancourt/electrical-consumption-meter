@@ -3,9 +3,7 @@ import ReactDOM from'react-dom';
 import Chart from './Chart';
 
 class GenerateShowChart extends React.Component{
-    constructor(props){
-        super(props);
-    }
+
 
     showChart(){
         ReactDOM.unmountComponentAtNode(document.getElementById('device-screen'));

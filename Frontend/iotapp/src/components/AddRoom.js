@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactDOM from'react-dom';
 import PropTypes from 'prop-types';
 import Popup from 'reactjs-popup';
@@ -43,7 +43,7 @@ class GenerateRoom extends React.Component{
 
   createRoom(name, type, stage) {
     var request = new XMLHttpRequest();
-    request.onreadystatechange = (e) => {
+    request.onreadystatechange = (e) => { 
       if (request.readyState !== 4) {
         return;
       }
@@ -83,8 +83,8 @@ class GenerateRoom extends React.Component{
 
   insertRoom(name, type, stage){
     this.deleteAlert();
-      if(type != ''){
-        if(name != ''){
+      if(type !== ''){
+        if(name !== ''){
           this.checkName(name, type, stage);
         }
         else{
@@ -113,9 +113,9 @@ class GenerateRoom extends React.Component{
         } modal>
           {close => (
             <div className="modal">
-              <a className="close" onClick={close}>
+              <href className="close" onClick={close}>
                 &times;
-              </a>           
+              </href>           
               <div className="header"> AÑADIR NUEVA SALA </div>
               <div className="content">
 

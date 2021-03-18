@@ -38,7 +38,7 @@ export default function Device({ device: { id, type, name, state }, offDevice, d
     case "10":
       icon_type = "PC";
        break;
-    case "12":
+    case "11":
       icon_type = "Refrigerador";
       break;
     case "12":
@@ -111,9 +111,9 @@ export default function Device({ device: { id, type, name, state }, offDevice, d
     } modal>
       {close => (
         <div className="modal-info">
-          <a className="close" onClick={close}>
+          <href className="close" onClick={close}>
             &times;
-          </a> 
+          </href> 
           <div className="content">
             <div class="terms">
               <img className="icon-info" src={require('../icons/dispositivos/'+ icon_type +'.png')} alt="Icon"/>

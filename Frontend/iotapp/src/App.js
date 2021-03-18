@@ -4,7 +4,7 @@ import store from './lib/redux_device';
 import './index.css';
 
 import Homepage from './auth/Homepage';
-import Login from './auth/Login';
+//import Login from './auth/Login';
 
 function App() {
   return (

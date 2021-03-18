@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactDOM from'react-dom';
 import PropTypes from 'prop-types';
 import Device from './Device';
-import { connect } from 'react-redux';
 
 class GenerateDeviceList extends React.Component{
   
@@ -52,7 +51,7 @@ class GenerateDeviceList extends React.Component{
         <div class="loader"></div>
         </div>;
     } 
-    else if (items.length == 0) {
+    else if (items.length === 0) {
       return <div className="empty">
         <br></br>No tienes dispositivos agregados
         <br></br>¿Desea agregar uno?

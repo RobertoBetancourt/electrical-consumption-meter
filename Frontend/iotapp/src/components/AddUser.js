@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactDOM from'react-dom';
 import PropTypes from 'prop-types';
-import Popup from 'reactjs-popup';
 
 class GenerateUser extends React.Component{
   constructor(props) {

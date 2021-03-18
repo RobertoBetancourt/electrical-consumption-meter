@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactDOM from'react-dom';
 import PropTypes from 'prop-types';
 import Popup from 'reactjs-popup';
@@ -89,8 +89,8 @@ class GenerateDevice extends React.Component{
 
   insertDevice(name, type, room){
     this.deleteAlert();
-      if(type != ''){
-        if(name != ''){
+      if(type !== ''){
+        if(name !== ''){
           this.checkName(name, type, room);
         }
         else{
@@ -119,9 +119,9 @@ class GenerateDevice extends React.Component{
         } modal>
           {close => (
             <div className="modal">
-              <a className="close" onClick={close}>
+              <href className="close" onClick={close}>
                 &times;
-              </a>           
+              </href>           
               <div className="header"> AÑADIR NUEVO DISPOSITIVO </div>
               <div className="content">
 

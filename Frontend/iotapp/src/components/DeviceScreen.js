@@ -1,4 +1,4 @@
-import React, { StrictMode } from 'react';
+import React from 'react';
 import ReactDOM from'react-dom';
 import PropTypes from 'prop-types';
 import AddButton from './AddDevice';
@@ -65,9 +65,9 @@ class GenerateDeviceScreen extends React.Component{
             } modal>
                 {close => (
                     <div className="modal">
-                        <a className="close" onClick={close}>
+                        <href className="close" onClick={close}>
                             &times;
-                        </a>           
+                        </href>           
                         <div className="content">
                             <h1 className="pregunta">
                             ¿Estás seguro de eliminar "{this.state.name}"?
