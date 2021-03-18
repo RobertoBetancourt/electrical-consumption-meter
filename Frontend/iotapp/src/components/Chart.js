@@ -87,10 +87,10 @@ class GenerateChart extends React.PureComponent {
         d3.select(this.refs.monthView).selectAll('*').remove();
         d3.select(this.refs.weekView).selectAll('*').remove();
 
-        if(this.state.view == 'Mensual'){
+        if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
 
-            if(response.status == 200){
+            if(response.status === 200){
                 response = await response.json();
                 this.setState({
                     status: true
@@ -99,7 +99,7 @@ class GenerateChart extends React.PureComponent {
                 const data = response.data.map((point) => {
                     let consumption = 0;
                     Object.keys(point).forEach((type) => {
-                        if(type != 'day'){
+                        if(type !== 'day'){
                             consumption += point[type];
                         }
                     });
@@ -204,7 +204,7 @@ class GenerateChart extends React.PureComponent {
                     const day = domain[d3.bisect(rangePoints, xPosition)];
                     
                     that.buildDayChart(response.data.filter((point) => {
-                        return point.day == day;
+                        return point.day === day;   
                     }), response.columns);
                 });
 
@@ -217,7 +217,7 @@ class GenerateChart extends React.PureComponent {
         }else{
             let response = await fetch(`http://localhost:3001/groups/devicesWeekly?week=${this.state.selectedWeek.format('YYYY-MM-DD')}&room=${this.state.room}`);
             
-            if(response.status == 200){
+            if(response.status === 200){
                 response = await response.json();
                 this.setState({
                     status: true
@@ -350,7 +350,7 @@ class GenerateChart extends React.PureComponent {
 
         data.forEach((point) => {
             Object.keys(point).forEach((type) => {
-                if(type != 'day'){
+                if(type !== 'day'){
                     if(!consumptionByType[type]){
                         consumptionByType[type] = {};
                     }
@@ -388,7 +388,7 @@ class GenerateChart extends React.PureComponent {
         d3.select(this.refs.roomView).selectAll('*').remove();
 
         let data = [];
-        if(this.state.view == 'Mensual'){
+        if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/roomsMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}`);
             data = await response.json();
         }else{
@@ -499,13 +499,13 @@ class GenerateChart extends React.PureComponent {
                 <div className="chart__date">
                     <SingleSelect className="chart__view-selector" label="Selecciona una vista" value={this.state.view} options={['Mensual', 'Semanal']} onChange={(view) => this.handleViewSelection(view)}/>
                     <MuiPickersUtilsProvider className="chart__date-selector" utils={MomentUtils} locale={"es"}>
-                        {this.state.view == 'Mensual' ? 
+                        {this.state.view === 'Mensual' ?   
                             <DatePicker openTo="month" views={["year", "month"]} label="Selecciona un mes" value={this.state.selectedMonth} onChange={(month) => this.handleMonthSelection(month)}/>
                             :
                             <DatePicker label="Selecciona una semana" value={this.state.selectedWeek} onChange={(week) => this.handleWeekSelection(week)} renderDay={this.renderWrappedWeekDay} labelFunc={this.formatWeekSelectLabel}/>
                         }
                     </MuiPickersUtilsProvider>
-                    <SingleSelect className="chart__room-selector" label="Selecciona un escenario" value={this.state.room} options={[{label: 'Todos', value: -1}].concat(this.state.rooms)} onChange={(room) => this.handleRoomSelection(room)} style={this.state.tab == 0 ? {visibility: 'visible'} : {visibility: 'hidden'}}/>
+                    <SingleSelect className="chart__room-selector" label="Selecciona un escenario" value={this.state.room} options={[{label: 'Todos', value: -1}].concat(this.state.rooms)} onChange={(room) => this.handleRoomSelection(room)} style={this.state.tab === 0 ? {visibility: 'visible'} : {visibility: 'hidden'}}/>
                 </div>
                 <Tabs justified={true} onChange={(tab) => this.onTabChange(tab)}>
                     <Tab value="pane-1" label="Dispositivos">
@@ -516,7 +516,7 @@ class GenerateChart extends React.PureComponent {
                         </div>
                         :
                         <div>
-                            {this.state.view == 'Mensual' ?
+                            {this.state.view === 'Mensual' ?
                             <div className="chart">
                                 <div ref="monthView" className="chart__view"></div>
                                 <div ref="dayView" className="chart__day"></div>
