@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Profile from '../components/Profile';
 
-export default function Homepage({ user: { id, type } }) {
-
+export default function Homepage() {
+  let user = { id: 1, type:1 }
   
     return (
       <div>
