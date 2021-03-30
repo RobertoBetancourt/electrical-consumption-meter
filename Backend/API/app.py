@@ -1,5 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 import mysql.connector
 import hashlib
 import json
@@ -11,8 +15,13 @@ config = {
   'database': 'IotDB'
 }
 
+
+
 app = Flask(__name__)
 CORS(app)
+
+app.config['JWT_SECRET_KEY'] = 's3cur1ty-token_wE!3'
+jwt = JWTManager(app)
 
 app.run(debug=True)
 
@@ -91,13 +100,14 @@ def Login():
 	if(res == []):
 		return "Contraseña incorrecta", 403
 
-
+	
 	response["id"] = res[0][0]
 	response["name"] = res[0][1]
 	response["email"] = res[0][2]
+	response["access_token"] = create_access_token(identity=email)
 	#response["status"] = res[0][4]
 	response["admin_id_admin"] = res[0][5]
-	
+
 	return jsonify(response), 200
 
 
