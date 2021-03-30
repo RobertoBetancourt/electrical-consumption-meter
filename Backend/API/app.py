@@ -72,15 +72,10 @@ def Login():
 	b = bytes(salt, "utf8")
 	encriptado = hashlib.md5(b).hexdigest()
 
-	print("Email: " + str(email))
-	print("Password: " + str(password))
-	print("Encriptado: " + str(encriptado))
-
 	val = (email,)
 	sql = "SELECT * FROM user WHERE email = %s"
 	mycursor.execute(sql, val)
 	row = mycursor.fetchone()
-	print("Hello There 1 " + str(row))
 	
 	if(row == None):
 		return "No existe el usuario", 404
@@ -88,12 +83,11 @@ def Login():
 	cursor = mydb.cursor()
 	args = (email, password)
 	cursor.callproc('LoginUser', args)
-	res = ''
+	res = []
 	for result in cursor.stored_results():
 		res = result.fetchall()
 
 	response = {}
-	print('Help me bithc ' + str(res))
 	if(res == []):
 		return "Contraseña incorrecta", 403
 
@@ -103,8 +97,7 @@ def Login():
 	response["email"] = res[0][2]
 	#response["status"] = res[0][4]
 	response["admin_id_admin"] = res[0][5]
-	print(response)
-
+	
 	return jsonify(response), 200
 
 
