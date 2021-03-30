@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import hashlib
+import json
 
 config = {
   'user': 'root',
@@ -13,7 +14,7 @@ config = {
 app = Flask(__name__)
 CORS(app)
 
-
+app.run(debug=True)
 
 ############################
 #                          #
@@ -71,26 +72,40 @@ def Login():
 	b = bytes(salt, "utf8")
 	encriptado = hashlib.md5(b).hexdigest()
 
-	mycursor = mydb.cursor()
-	email = request.args.get('email')
-	password = request.args.get('password')
+	print("Email: " + str(email))
+	print("Password: " + str(password))
+	print("Encriptado: " + str(encriptado))
 
 	val = (email,)
 	sql = "SELECT * FROM user WHERE email = %s"
 	mycursor.execute(sql, val)
 	row = mycursor.fetchone()
+	print("Hello There 1 " + str(row))
+	
+	if(row == None):
+		return "No existe el usuario", 404
 
-	if(len(row) == 0):
-		return "", 404
+	cursor = mydb.cursor()
+	args = (email, password)
+	cursor.callproc('LoginUser', args)
+	res = ''
+	for result in cursor.stored_results():
+		res = result.fetchall()
 
-	val = (encriptado,)
-	mycursor.callproc('PasswordAdministrador', val)
-	row = mycursor.fetchone()
+	response = {}
+	print('Help me bithc ' + str(res))
+	if(res == []):
+		return "Contraseña incorrecta", 403
 
-	if(len(row) == 0):
-		return "", 400
 
-	return perfil, 200
+	response["id"] = res[0][0]
+	response["name"] = res[0][1]
+	response["email"] = res[0][2]
+	#response["status"] = res[0][4]
+	response["admin_id_admin"] = res[0][5]
+	print(response)
+
+	return jsonify(response), 200
 
 
 
@@ -104,7 +119,6 @@ def Insert():
 	password = request.args.get('password')
 	stage = request.args.get('stage')
 	admin = request.args.get('admin')
-
 
 	salt="asdfghjkl"+password
 	b=bytes(salt, "utf8")

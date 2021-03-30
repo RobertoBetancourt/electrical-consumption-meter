@@ -10,9 +10,9 @@ DELIMITER ;
 
 -- LoginUser
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LoginUser`(IN email VARCHAR(45), IN password VARCHAR(255))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LoginUser`(IN email VARCHAR(45), IN pass VARCHAR(255))
 BEGIN
-SELECT * FROM user WHERE email = email AND password =  password;
+SELECT * FROM user WHERE email = email AND password =  pass;
 END ;;
 DELIMITER ;
 

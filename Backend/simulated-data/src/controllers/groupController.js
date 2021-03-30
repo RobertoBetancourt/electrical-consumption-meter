@@ -121,8 +121,10 @@ exports.devicesMonthly = async (req, res) => {
 };
 
 exports.devicesWeekly = async (req, res) => {
+    console.log("Hola estoy en devices Weekly");
     try{
         let response = await fetch('http://localhost:5000/devices');
+        console.log("La respuesta: %O", response);
         response = await response.json();
 
         const weekStart = moment(req.query.week);
@@ -259,8 +261,9 @@ exports.devicesWeekly = async (req, res) => {
 exports.roomsMonthly = async (req, res) => {
     try{
         let response = await fetch('http://localhost:5000/devices');
+        console.log("La respuesta: %O", response);
         response = await response.json();
-
+         
         const devices = response.items;
         const rooms = {};
         let total = 0;
