@@ -77,7 +77,7 @@ def Login():
 	email = request.args.get('email')
 	password = request.args.get('password')
 
-	salt = "asdfghjkl" + email
+	salt = "asdfghjkl" + password
 	b = bytes(salt, "utf8")
 	encriptado = hashlib.md5(b).hexdigest()
 
@@ -90,7 +90,7 @@ def Login():
 		return "No existe el usuario", 404
 
 	cursor = mydb.cursor()
-	args = (email, password)
+	args = (email, encriptado)
 	cursor.callproc('LoginUser', args)
 	res = []
 	for result in cursor.stored_results():
@@ -126,6 +126,15 @@ def Insert():
 	salt="asdfghjkl"+password
 	b=bytes(salt, "utf8")
 	encriptado = hashlib.md5(b).hexdigest()
+	
+	email = request.args.get('email')
+	sql = "SELECT name FROM user WHERE email = %s"
+	val = (email,)
+	mycursor.execute(sql, val)
+	user_name = mycursor.fetchone()
+
+	if(user_name != None):
+		return "Usuario ya registrado", 404
 
 	try:
 		args = (name, email, encriptado, admin)
@@ -142,11 +151,12 @@ def Insert():
 	sql = "INSERT INTO user_has_stage (user_id_user, user_admin_id_admin, stage_id_stage) VALUES (%s,%s,%s)"
 	val = (id_user[0], admin, stage)
 	mycursor.execute(sql, val)
-	
-	print("entro a insert")
+
 	mydb.commit()
-	print(mycursor.rowcount,"record inserted.")
-	return "200"
+	response = {}
+	response["id_user"] = id_user[0]
+	response["access_token"] = create_access_token(identity=email)
+	return response, "200"
 
 @app.route("/delete", methods=['GET'])
 def Delete():
