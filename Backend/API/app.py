@@ -89,24 +89,17 @@ def Login():
 	if(row == None):
 		return "No existe el usuario", 404
 
-	cursor = mydb.cursor()
-	args = (email, encriptado)
-	cursor.callproc('LoginUser', args)
-	res = []
-	for result in cursor.stored_results():
-		res = result.fetchall()
 
 	response = {}
-	if(res == []):
+	if(row[3] != encriptado):
 		return "Contraseña incorrecta", 403
 
-	
-	response["id"] = res[0][0]
-	response["name"] = res[0][1]
-	response["email"] = res[0][2]
+	response["id"] = row[0]
+	response["name"] = row[1]
+	response["email"] = row[2]
 	response["access_token"] = create_access_token(identity=email)
 	#response["status"] = res[0][4]
-	response["admin_id_admin"] = res[0][5]
+	response["admin_id_admin"] = row[5]
 
 	return jsonify(response), 200
 

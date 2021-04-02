@@ -53,7 +53,7 @@ const AuthState = props => {
     const iniciarSesion = async datos => {
         try {
             const respuesta = await clienteAxios.get('/login', datos);
-            
+            console.log(respuesta);
             dispatch({
                 type: LOGIN_EXITOSO,
                 payload: respuesta.data
