@@ -137,8 +137,9 @@ def Insert():
 		return "Usuario ya registrado", 404
 
 	try:
+		sql = "INSERT INTO user (name, email, password, status, admin_id_admin) VALUES (%s,%s,%s,TRUE,%s)"
 		args = (name, email, encriptado, admin)
-		mycursor.callproc('insertUser', args)
+		mycursor.execute(sql, args)
 	except mysql.connector.IntegrityError:
 		return "Something went wrong","409"
 
@@ -218,7 +219,7 @@ def Search():
 	return jsonify(user), 200
 
 @app.route("/showAllUser", methods=['GET'])
-@jwt_required()
+##@jwt_required()
 def ShowAll():
 
 	mydb = mysql.connector.connect(**config)
@@ -253,7 +254,7 @@ def ShowAll():
 #############################  STAGE   #################################
 
 @app.route("/insertStage", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def InsertStage():
 	mydb = mysql.connector.connect(**config)
 
@@ -275,7 +276,7 @@ def InsertStage():
 
 
 @app.route("/deleteStage", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def DeleteStage():
 
 	mydb = mysql.connector.connect(**config)
@@ -293,7 +294,7 @@ def DeleteStage():
 
 #Dado un id_stage
 @app.route("/searchStage", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def SearchStage():
 
 	mydb = mysql.connector.connect(**config)
@@ -320,7 +321,7 @@ def SearchStage():
 	return jsonify(items), 200
 
 @app.route("/getStage", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def GetStage():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -342,7 +343,7 @@ def GetStage():
 
 
 @app.route("/modifyStage", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def ModifyStage():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -358,7 +359,7 @@ def ModifyStage():
 	return "", 200
 
 @app.route("/showAllStage", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def ShowAllStage():
 
 	mydb = mysql.connector.connect(**config)
@@ -381,7 +382,7 @@ def ShowAllStage():
 	return jsonify(items), 200
 
 @app.route("/stageCountDevices", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def StageCountDevices():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -407,7 +408,7 @@ def StageCountDevices():
 	return jsonify(items), 200
 
 @app.route("/stageCountUsers", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def StageCountUsers():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -435,7 +436,7 @@ def StageCountUsers():
 #############################  ROOM   #################################
 
 @app.route("/insertRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def InsertRoom():
 	mydb = mysql.connector.connect(**config)
 
@@ -458,7 +459,7 @@ def InsertRoom():
 
 
 @app.route("/deleteRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def DeleteRoom():
 
 	mydb = mysql.connector.connect(**config)
@@ -476,7 +477,7 @@ def DeleteRoom():
 
 #Dado un id_room
 @app.route("/searchRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def SearchRoom():
 
 	mydb = mysql.connector.connect(**config)
@@ -505,7 +506,7 @@ def SearchRoom():
 
 
 @app.route("/modifyRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def ModifyRoom():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -522,7 +523,7 @@ def ModifyRoom():
 	return "", 200
 
 @app.route("/showAllRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def ShowAllRoom():
 
 	mydb = mysql.connector.connect(**config)
@@ -548,7 +549,7 @@ def ShowAllRoom():
 	return jsonify(items), 200
 
 @app.route("/countDevices", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def CountDevices():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -574,7 +575,7 @@ def CountDevices():
 	return jsonify(items), 200
 
 @app.route("/checkRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def CheckRoom():
 
 	mydb = mysql.connector.connect(**config)
@@ -598,7 +599,7 @@ def CheckRoom():
 
 
 @app.route("/getNameRoom", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def GetNameRoom():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -625,7 +626,7 @@ def GetNameRoom():
 ############################
 
 @app.route("/insertDevice", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def InsertProduct():
 	mydb = mysql.connector.connect(**config)
 
@@ -650,7 +651,7 @@ def InsertProduct():
 
 
 @app.route("/deleteDevice", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def DeleteDevice():
 
 	mydb = mysql.connector.connect(**config)
@@ -668,7 +669,7 @@ def DeleteDevice():
 
 #Dado un id_device
 @app.route("/searchDevice", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def SearchDevice():
 
 	mydb = mysql.connector.connect(**config)
@@ -689,7 +690,7 @@ def SearchDevice():
 
 
 @app.route("/modifyDevice", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def ModifyDevice():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -709,7 +710,7 @@ def ModifyDevice():
 	return "", 200
 
 @app.route("/showAllDevice", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def ShowAllDevice():
 
 	mydb = mysql.connector.connect(**config)
@@ -735,7 +736,7 @@ def ShowAllDevice():
 	return jsonify(items), 200
 
 @app.route('/devices', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def deviceIndex():
 	mydb = mysql.connector.connect(**config)
 	mycursor = mydb.cursor(buffered=True)
@@ -765,7 +766,7 @@ def deviceIndex():
 #                               #       
 #################################
 @app.route("/checkType", methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def CheckType():
 
 	mydb = mysql.connector.connect(**config)
