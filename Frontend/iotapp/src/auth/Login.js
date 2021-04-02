@@ -11,7 +11,7 @@ export default function SignIn(props) {
 
       useEffect(() => {
         if(autenticado) {
-            props.history.push('/home');
+            props.history.push('/homepage');
         }
 
         // eslint-disable-next-line

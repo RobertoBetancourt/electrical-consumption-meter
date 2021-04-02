@@ -52,7 +52,8 @@ const AuthState = props => {
     // Cuando el usuario inicia sesión
     const iniciarSesion = async datos => {
         try {
-            const respuesta = await clienteAxios.get('/login', datos);
+            console.log(datos)
+            const respuesta = await clienteAxios.get('/login?email=' + datos.email + "&password=" + datos.password);
             console.log(respuesta);
             dispatch({
                 type: LOGIN_EXITOSO,
