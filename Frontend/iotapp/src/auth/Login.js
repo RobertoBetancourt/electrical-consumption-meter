@@ -2,16 +2,25 @@ import React, {useContext, useEffect, useState} from 'react';
 import './login.css';
 import user from '../icons/user.png'
 import AuthContext from '../context/auth/authContext';
+import AlertaContext from '../context/alertas/alertaContext';
+import Alerta from '../components/layout/Alerta';
 
 export default function SignIn(props) {
 
     // extraer los valores del context
     const authContext = useContext(AuthContext);
     const { msg, autenticado, iniciarSesion } = authContext;
+    const alertaContext = useContext(AlertaContext);
+    const { alerta, mostrarAlerta } = alertaContext;
 
       useEffect(() => {
         if(autenticado) {
             props.history.push('/homepage');
+        }
+
+        //alerta
+        if(msg) {
+            mostrarAlerta(msg.msg, msg.categoria);
         }
 
         // eslint-disable-next-line
@@ -49,6 +58,9 @@ export default function SignIn(props) {
 
   return (
     <div className="form-usuario">
+            <Alerta
+                alerta = {alerta}
+            />
             <div className="contenedor-form sombra-dark">
                 <img class="centrado" src={user} width="30%"/>
                 <h1>Iniciar Sesión</h1>
@@ -85,7 +97,7 @@ export default function SignIn(props) {
                             value="Iniciar Sesión" />
                     </div>
                     <div class="campo acciones">
-                        <a href="·">Crear cuenta</a>
+                        <a href="/register">Crear cuenta</a>
                         <a href="#">Olvidé mi contraseña</a>
                     </div>
                 </form>

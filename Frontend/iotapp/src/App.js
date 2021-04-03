@@ -6,6 +6,8 @@ import AuthState from './context/auth/authState';
 import tokenAuth from './config/token';
 import Homepage from './auth/Homepage';
 import Login from './auth/Login';
+import Register from './auth/Register';
+import AlertaState from './context/alertas/alertaState';
 import './index.css';
 
 //token
@@ -16,16 +18,19 @@ if(token) {
 
 function App() {
   return (
-    <AuthState>  
-      <Provider store={store}>
-        <Router>
-          <Switch>
-            <Route exact path = "/" component = {Login}/>
-            <Route exact path = "/homepage" component = {Homepage}/>
-          </Switch>
-        </Router>
-      </Provider>
-    </AuthState>
+    <AlertaState>
+      <AuthState>  
+        <Provider store={store}>
+          <Router>
+            <Switch>
+              <Route exact path = "/" component = {Login}/>
+              <Route exact path = "/homepage" component = {Homepage}/>
+              <Route exact path = "/register" component = {Register}/>
+            </Switch>
+          </Router>
+        </Provider>
+      </AuthState>
+    </AlertaState>
   );
 }
 export default App;

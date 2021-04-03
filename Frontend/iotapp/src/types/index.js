@@ -5,3 +5,8 @@ export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const CERRAR_SESION = 'CERRAR_SESION';
 export const REGISTRO_EXITOSO  = 'REGISTRO_EXITOSO';
 export const REGISTRO_ERROR = 'REGISTRO_ERROR';
+
+
+//Alertas
+export const MOSTRAR_ALERTA = 'MOSTRAR_ALERTA';
+export const OCULTAR_ALERTA = 'OCULTAR_ALERTA';
