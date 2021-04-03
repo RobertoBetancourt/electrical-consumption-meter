@@ -1,25 +1,50 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './login.css';
 import user from '../icons/user.png'
+import AuthContext from '../context/auth/authContext';
 
-export default function SignIn({email, password}) {
+export default function SignIn(props) {
 
-    function checkUser(email, password){
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = (e) => {
-          if (request.readyState !== 4) {
+    // extraer los valores del context
+    const authContext = useContext(AuthContext);
+    const { msg, autenticado, iniciarSesion } = authContext;
+
+      useEffect(() => {
+        if(autenticado) {
+            props.history.push('/homepage');
+        }
+
+        // eslint-disable-next-line
+    }, [msg, autenticado, props.history]);
+
+    // State para iniciar sesión
+    const [usuario, guardarUsuario] = useState({
+        email: '',
+        password: ''
+    });
+
+    // extraer de usuario
+    const { email, password } = usuario;
+
+    const onChange = e => {
+        guardarUsuario({
+            ...usuario,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    // Cuando el usuario quiere iniciar sesión
+    const onSubmit = e => {
+        e.preventDefault();
+
+        // Validar que no haya campos vacios
+        if(email.trim() === '' || password.trim() === '') {
             return;
-          }
-          if (request.status === 200) {
-            console.log('success', request.responseText);
-            //this.showAlertRepeatedName();
-          } else {
-            console.warn('error');
-            //this.createRoom(name, type, stage);
-          } 
-        };
-        request.open('GET', 'http://localhost:5000/login?username=' + email + '&password=' + password);
-        request.send();
+        }
+        
+        console.log(email, password);    
+        // Pasarlo al action
+        iniciarSesion({ email, password });
     }
 
   return (
@@ -28,7 +53,7 @@ export default function SignIn({email, password}) {
                 <img class="centrado" src={user} width="30%"/>
                 <h1>Iniciar Sesión</h1>
 
-                <form>
+                <form onSubmit={onSubmit}>
                     <div className="campo-form">
                         <label htmlFor="email">Email</label>
                         <input 
@@ -37,6 +62,7 @@ export default function SignIn({email, password}) {
                             name="email"
                             placeholder="Tu Email"
                             value={email}
+                            onChange={onChange}
                         />
                     </div>
 
@@ -48,6 +74,7 @@ export default function SignIn({email, password}) {
                             name="password"
                             placeholder="Password"
                             value={password}
+                            onChange={onChange}
                         />
                     </div>
 
