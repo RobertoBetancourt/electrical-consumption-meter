@@ -52,7 +52,7 @@ const AuthState = props => {
     // Cuando el usuario inicia sesión
     const iniciarSesion = async datos => {
         try {
-            console.log(datos)
+            //console.log(datos)
             const respuesta = await clienteAxios.get('/login?email=' + datos.email + "&password=" + datos.password);
             console.log(respuesta);
             dispatch({
@@ -63,9 +63,9 @@ const AuthState = props => {
             // Obtener el usuario
             usuarioAutenticado();
         } catch (error) {
-            console.log(error.response.data.msg);
+            //console.log(error.response.data.msg);
             const alerta = {
-                msg: error.response.data.msg,
+                msg: "Los datos ingresados no son correctos",
                 categoria: 'alerta-error'
             }
 
