@@ -36,7 +36,6 @@ h1 {
     font-weight: 700;
     text-transform: uppercase;
 }
-.default-form input[type="text"],
 .default-form input[type="number"],
 .default-form input[type="date"],
 .default-form select{

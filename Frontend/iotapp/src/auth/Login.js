@@ -72,7 +72,7 @@ export default function SignIn(props) {
                             type="email"
                             id="email"
                             name="email"
-                            placeholder="Tu Email"
+                            placeholder="Email"
                             value={email}
                             onChange={onChange}
                         />
