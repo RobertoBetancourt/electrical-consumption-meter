@@ -15,7 +15,7 @@ export default function SignIn(props) {
 
       useEffect(() => {
         if(autenticado) {
-            props.history.push('/');
+            props.history.push('/homepage');
         }
 
         //alerta

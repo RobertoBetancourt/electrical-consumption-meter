@@ -19,7 +19,7 @@ const Register = (props) => {
 
         if (autenticado) {
             mostrarAlerta('Usuario agregado correctamente', 'alerta-exito');
-            props.history.push('/');
+            props.history.push('/homepage');
         }
 
         if (mensaje) {
