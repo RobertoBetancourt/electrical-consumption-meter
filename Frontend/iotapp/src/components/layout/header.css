@@ -1,0 +1,26 @@
+.btn1 {
+    margin-top: 1rem;
+    font-family: var(--headingFont);
+    padding: .5rem;
+    font-size: .9rem;
+    font-weight: 500;
+    border-radius: .5rem;
+    border: none;
+    transition: background-color .3s ease;
+  }
+  .btn1:hover {
+    cursor: pointer;
+    background-color: gray;
+  }
+  .btn1-blank {
+    margin: 1rem;
+    display: block;
+    background-color: rgb(235, 234, 234);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cerrar-sesion {
+    color: #000
+    
+  }
+  

@@ -6,6 +6,7 @@ import RoomList from './RoomList';
 
 export function PureRoomScreen({id_stage}) {
   return (
+      <>
       <div className="screen-room">
         <nav>
           <h1 className="screen-title">
@@ -15,6 +16,7 @@ export function PureRoomScreen({id_stage}) {
         <RoomList stage={id_stage}/>
         <AddButtonRoom addButtonRoom={{}} />
       </div>
+      </>
   );
 }
 

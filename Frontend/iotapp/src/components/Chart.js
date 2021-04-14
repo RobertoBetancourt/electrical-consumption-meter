@@ -542,7 +542,6 @@ class GenerateChart extends React.PureComponent {
                         </div>}
                     </Tab>
                     <Tab value="pane-2" label="Escenarios">
-                        
                     <div className="chart">
                         <div ref="roomView" className="chart__view"></div>
                     </div>
