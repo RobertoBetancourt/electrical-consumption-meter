@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {Component} from 'react';
+import ReactDOM from'react-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Profile from '../components/Profile';
+import Header from '../components/layout/Header';
 
-export default function Homepage() {
-  let user = { id: 1, type:1 }
+export default function Homepage({ user: { id, type } }) {
+
   
     return (
       <div>
@@ -15,6 +18,7 @@ export default function Homepage() {
   
   Homepage.propTypes = {
       user: PropTypes.shape({
+        id: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired,
       }),
     };

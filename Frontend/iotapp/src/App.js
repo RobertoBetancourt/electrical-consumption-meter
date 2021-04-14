@@ -24,7 +24,9 @@ function App() {
           <Router>
             <Switch>
               <Route exact path = "/" component = {Login}/>
-              <Route exact path = "/homepage" component = {Homepage}/>
+              <Route exact path = "/homepage" render={(props) => (
+                <Homepage {...props} user={{id: "1", type: "1"}} />
+              )}/>
               <Route exact path = "/register" component = {Register}/>
             </Switch>
           </Router>
