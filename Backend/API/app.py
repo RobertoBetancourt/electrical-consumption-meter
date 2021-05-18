@@ -89,7 +89,6 @@ def Login():
 	if(row == None):
 		return "No existe el usuario", 404
 
-
 	response = {}
 	if(row[3] != encriptado):
 		return "Contraseña incorrecta", 403

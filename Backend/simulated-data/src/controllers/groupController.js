@@ -11,9 +11,24 @@ exports.devicesMonthly = async (req, res) => {
 
         const devices = response.items;
         let columns = ['day'];
+        
         const records = devices.filter((device) => {
             return req.query.room == -1 || device.room_id == req.query.room;
         }).map((device) => {
+
+            
+
+            var getData = (filename) =>{
+                const filePath = path.join(__dirname, `../data/${filename}.csv`);
+                const fileBuffer = fs.readFileSync(filePath);
+                const fileString = fileBuffer.toString()
+                    .split('\n')
+                    .map(e => e.trim())
+                    .map(e => e.split(',').map(e => e.trim()))
+                    .flat();
+                return fileString
+            }
+            var arr = [];
             let type;
             switch(device.type){
                 case 1:
@@ -30,15 +45,19 @@ exports.devicesMonthly = async (req, res) => {
                     break;
                 case 5:
                     type = 'Clima';
+                    arr = getData('calefactor');
                     break;
                 case 6:
                     type = 'Impresoras';
+                    arr = getData('secadora')
                     break;
                 case 7:
                     type = 'Lavadoras';
+                    arr = getData('ventilador')
                     break;
                 case 8:
                     type = 'Licuadoras';
+                    arr = getData('aireAcondicionado')
                     break;
                 case 10:
                     type = 'Computadoras';
@@ -56,24 +75,31 @@ exports.devicesMonthly = async (req, res) => {
             if(!columns.includes(type)){
                 columns.push(type);
             }
+            var recordPath = path.join(__dirname, `../data/${req.query.month}-${device.id}.csv`);
+            var recordBuffer = fs.readFileSync(recordPath);
+            var recordString = recordBuffer.toString();
 
-            const recordPath = path.join(__dirname, `../data/${req.query.month}-${device.id}.csv`);
-            const recordBuffer = fs.readFileSync(recordPath);
-            const recordString = recordBuffer.toString();
-
-            const record = parse(recordString, {
+            var record = parse(recordString, {
                 columns: true
             });
-
-            return record.map((entry) => {
-                return {
-                    date: new Date(parseInt(entry.date)),
-                    consumption: parseInt(entry.consumption),
-                    type
-                };
+            
+            return record.map((entry, index) => {
+                if(arr.length === 0){
+                    return {
+                        date: new Date(parseInt(entry.date)),
+                        consumption: parseInt(entry.consumption),
+                        type
+                    };
+                }else{
+                    return {
+                        date: new Date(parseInt(entry.date)),
+                        consumption: parseInt(arr[index]),
+                        type
+                    };
+                }
+                
             });
         });
-
         const days = {};
         records.flat().forEach((entry) => {
             const day = moment(entry.date).startOf('day').format('DD');
@@ -105,7 +131,8 @@ exports.devicesMonthly = async (req, res) => {
                 ...days[day]
             };
         });
-
+        console.log('Formated')
+        console.log(formatted)
         const result = {
             data: formatted,
             columns
@@ -124,7 +151,7 @@ exports.devicesWeekly = async (req, res) => {
     console.log("Hola estoy en devices Weekly");
     try{
         let response = await fetch('http://localhost:5000/devices');
-        console.log("La respuesta: %O", response);
+        console.log("La respuesta we: %O", response);
         response = await response.json();
 
         const weekStart = moment(req.query.week);
@@ -261,7 +288,7 @@ exports.devicesWeekly = async (req, res) => {
 exports.roomsMonthly = async (req, res) => {
     try{
         let response = await fetch('http://localhost:5000/devices');
-        console.log("La respuesta: %O", response);
+        console.log("La respuesta mo: %O", response);
         response = await response.json();
          
         const devices = response.items;
