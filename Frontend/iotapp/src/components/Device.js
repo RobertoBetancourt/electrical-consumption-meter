@@ -51,7 +51,13 @@ export default function Device({ device: { id, type, name, state }, offDevice, d
       icon_type = "Microondas";
       break;
     case "15":
+      icon_type = "Calefactor";
+      break;
+    case "16":
       icon_type = "Secadora";
+      break;
+    case "17":
+      icon_type = "Ventilador";
       break;
     default:
       icon_type = "blank";

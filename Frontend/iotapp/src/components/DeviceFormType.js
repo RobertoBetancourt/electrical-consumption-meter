@@ -27,6 +27,9 @@ export const device = {
     
     { ...device, id: '11', name: 'Cafetera', type: 'cafe' },
     { ...device, id: '12', name: 'Refrigerador', type: 'refrigerador' },
+    { ...device, id: '15', name: 'Calefactor', type: 'calefactor' },
+    { ...device, id: '16', name: 'Secadora', type: 'secadora' },
+    { ...device, id: '17', name: 'Ventilador', type: 'ventilador' },
     
   ];
 
