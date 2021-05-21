@@ -45,19 +45,16 @@ exports.devicesMonthly = async (req, res) => {
                     break;
                 case 5:
                     type = 'Clima';
-                    arr = getData('calefactor');
+                    arr = getData('aireAcondicionado');
                     break;
                 case 6:
                     type = 'Impresoras';
-                    arr = getData('secadora')
                     break;
                 case 7:
                     type = 'Lavadoras';
-                    arr = getData('ventilador')
                     break;
                 case 8:
                     type = 'Licuadoras';
-                    arr = getData('aireAcondicionado')
                     break;
                 case 10:
                     type = 'Computadoras';
@@ -70,6 +67,18 @@ exports.devicesMonthly = async (req, res) => {
                     break;
                 case 14:
                     type = 'Microondas';
+                    break;
+                case 15:
+                    type = 'Calefactor';
+                    arr = getData('calefactor');
+                    break;
+                case 16:
+                    type = 'Secadora';
+                    arr = getData('secadora')
+                    break;
+                case 17:
+                    type = 'Ventilador';
+                    arr = getData('ventilador');
                     break;
             }
             if(!columns.includes(type)){
@@ -151,7 +160,6 @@ exports.devicesWeekly = async (req, res) => {
     console.log("Hola estoy en devices Weekly");
     try{
         let response = await fetch('http://localhost:5000/devices');
-        console.log("La respuesta we: %O", response);
         response = await response.json();
 
         const weekStart = moment(req.query.week);
@@ -161,7 +169,7 @@ exports.devicesWeekly = async (req, res) => {
         const endMonth = weekEnd.format('YYYY-MM')
         const months = [startMonth];
         if(endMonth != startMonth){
-            months.push(endMonth);
+            months.push(endMonth); 
         }
 
         const devices = response.items;
@@ -170,6 +178,7 @@ exports.devicesWeekly = async (req, res) => {
             return devices.filter((device) => {
                 return req.query.room == -1 || device.room_id == req.query.room;
             }).map((device) => {
+                
                 let type;
                 switch(device.type){
                     case 1:

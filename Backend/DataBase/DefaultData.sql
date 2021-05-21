@@ -32,7 +32,9 @@ INSERT INTO `type` (`name_type`) VALUES
 ('Asistente'),
 ('Cafetera'),
 ('Microondas'),
+('Calefactor'),
 ('Secadora'),
+('Ventilador'),
 ('Otro');
 
 -- STAGE
