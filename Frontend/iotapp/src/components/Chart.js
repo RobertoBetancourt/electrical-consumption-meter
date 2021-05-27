@@ -89,9 +89,11 @@ class GenerateChart extends React.PureComponent {
 
         if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
-
+            let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
             if(response.status === 200){
                 response = await response.json();
+                response_2 = await response_2.json();
+
                 this.setState({
                     status: true
                 });
@@ -109,6 +111,21 @@ class GenerateChart extends React.PureComponent {
                         consumption
                     };
                 });
+
+                const second_data = response_2.data.map((point) => {
+                    let consumption = 0;
+                    Object.keys(point).forEach((type) => {
+                        if(type !== 'day'){
+                            consumption += point[type];
+                        }
+                    });
+
+                    return {
+                        day: point.day,
+                        consumption
+                    };
+                });
+
                 const columns = ['day', 'consumption'];
                 const series = columns.slice(1).map((key) => {
                     return data.map(({[key]: value, day}) => {
@@ -120,6 +137,16 @@ class GenerateChart extends React.PureComponent {
                     });
                 });
 
+                const serie_2 = columns.slice(1).map((key) => {
+                    return second_data.map(({[key]: value, day}) => {
+                        return {
+                            key,
+                            day,
+                            value
+                        }
+                    });
+                });
+                
                 const margin = {
                     top: 30,
                     right: 50, 
@@ -159,6 +186,8 @@ class GenerateChart extends React.PureComponent {
                 });
 
                 const serie = svg.append('g').selectAll('g').data(series).join('g');
+                const series_2 = svg.append('g').selectAll('g').data(serie_2).join('g');
+
                 serie.append('path').attr('fill', 'none').attr('stroke', (point) => {
                     return z(point[0].key);
                 }).attr('stroke-width', 1.5).attr('d', d3.line().x((point) => {
@@ -167,8 +196,56 @@ class GenerateChart extends React.PureComponent {
                     return y(point.value);
                 }));
                 
+                series_2.append('path').attr('fill', 'none').attr('stroke', (point) => {
+                    return z(point[0].key);
+                }).attr('stroke-width', 1.5).attr('d', d3.line().x((point) => {
+                    return x(point.day);
+                }).y((point) => {
+                    return y(point.value);
+                }));
+
                 const that = this;
                 serie.append('g').attr('font-family', 'sans-serif').attr('font-size', 10).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('text-anchor', 'middle').selectAll('text').data((point) => {
+                    return point;
+                }).join('circle').attr('cx', (point) => {
+                    return x(point.day);
+                }).attr('cy', (point) => {
+                    return y(point.value);
+                }).attr('r', (point, index) => {
+                    return 5;
+                }).style('fill', '#fcb0b5').on('mouseover', function(event){
+                    d3.select(this).transition().duration(200).style('fill', '#d30715');
+
+                    const [xPosition, yPosition] = d3.pointer(event, this);
+                    const domain = x.domain();
+                    const range = x.range();
+                    const rangePoints = d3.range(range[0], range[1], x.step());
+                    const point = {};
+                    point.day = domain[d3.bisect(rangePoints, xPosition)];
+                    point.consumption = y.invert(yPosition);
+
+                    tooltip.append('text').attr('id', 'label').text(Math.round(point.consumption)).attr('y', yPosition - 12).attr('x', xPosition);
+                    tooltip.append('line').attr('id', 'path').attr('x1', xPosition).attr('y1', yPosition).attr('x2', xPosition).attr('y2', height - margin.bottom).attr('stroke', 'black').attr('stroke-dasharray', ('3, 3'));
+                }).on('mouseout', function(event){
+                    d3.select(this).transition().duration(500).style('fill', '#fcb0b5');
+
+                    tooltip.selectAll('#label').remove();
+                    tooltip.selectAll('#path').remove();
+                }).on('click', function(event){
+                    event.stopPropagation();
+
+                    const xPosition = d3.pointer(event, this)[0]
+                    const domain = x.domain();
+                    const range = x.range();
+                    const rangePoints = d3.range(range[0], range[1], x.step());
+                    const day = domain[d3.bisect(rangePoints, xPosition)];
+                    
+                    that.buildDayChart(response.data.filter((point) => {
+                        return point.day === day;   
+                    }), response.columns);
+                }); 
+
+                series_2.append('g').attr('font-family', 'sans-serif').attr('font-size', 10).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('text-anchor', 'middle').selectAll('text').data((point) => {
                     return point;
                 }).join('circle').attr('cx', (point) => {
                     return x(point.day);
