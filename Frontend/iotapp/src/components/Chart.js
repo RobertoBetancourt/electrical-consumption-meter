@@ -89,10 +89,13 @@ class GenerateChart extends React.PureComponent {
 
         if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
+            //Second Line
+            
             let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
             if(response.status === 200){
                 response = await response.json();
-                response_2 = await response_2.json();
+
+                response_2 = await response_2.json(); //Second Line
 
                 this.setState({
                     status: true
@@ -124,7 +127,7 @@ class GenerateChart extends React.PureComponent {
                         day: point.day,
                         consumption
                     };
-                });
+                }); //Second Line
 
                 const columns = ['day', 'consumption'];
                 const series = columns.slice(1).map((key) => {
@@ -145,7 +148,7 @@ class GenerateChart extends React.PureComponent {
                             value
                         }
                     });
-                });
+                });//Second Line
                 
                 const margin = {
                     top: 30,
@@ -186,7 +189,7 @@ class GenerateChart extends React.PureComponent {
                 });
 
                 const serie = svg.append('g').selectAll('g').data(series).join('g');
-                const series_2 = svg.append('g').selectAll('g').data(serie_2).join('g');
+                const series_2 = svg.append('g').selectAll('g').data(serie_2).join('g'); //Second Line
 
                 serie.append('path').attr('fill', 'none').attr('stroke', (point) => {
                     return z(point[0].key);
@@ -202,7 +205,7 @@ class GenerateChart extends React.PureComponent {
                     return x(point.day);
                 }).y((point) => {
                     return y(point.value);
-                }));
+                })); //Second Line
 
                 const that = this;
                 serie.append('g').attr('font-family', 'sans-serif').attr('font-size', 10).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('text-anchor', 'middle').selectAll('text').data((point) => {
@@ -283,8 +286,8 @@ class GenerateChart extends React.PureComponent {
                     that.buildDayChart(response.data.filter((point) => {
                         return point.day === day;   
                     }), response.columns);
-                });
-
+                });   //Second Line
+ 
                 this.buildLegend(response.data, response.columns.slice(1));
             }else{ 
                 this.setState({
