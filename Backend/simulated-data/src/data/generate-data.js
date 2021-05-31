@@ -28,9 +28,11 @@ const generateData = async (offset) => {
     });
 
     records.forEach((record, index) => {
+        console.log(record)
         const recordString = stringify(record, {
             header: true
         });
+        console.log(recordString)
         fs.writeFileSync(`${start.format('YYYY-MM')}-${devices[index].id}.csv`, recordString);
     });
 };

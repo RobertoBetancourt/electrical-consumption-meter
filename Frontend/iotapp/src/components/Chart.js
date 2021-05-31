@@ -90,6 +90,7 @@ class GenerateChart extends React.PureComponent {
         if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             //Second Line
+            let response_3= await fetch(`http://localhost:3001/groups/optMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             
             let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
             if(response.status === 200){

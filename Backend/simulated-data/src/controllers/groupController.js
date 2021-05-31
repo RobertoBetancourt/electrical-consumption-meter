@@ -28,7 +28,6 @@ const generateData = async (offset) => {
 
         return record;
     });
-
     records.forEach((record, index) => {
         const recordString = stringify(record, {
             header: true
@@ -49,9 +48,6 @@ exports.devicesMonthly = async (req, res) => {
         const records = devices.filter((device) => {
             return req.query.room == -1 || device.room_id == req.query.room;
         }).map((device) => {
-
-            
-
             var getData = (filename) =>{
                 const filePath = path.join(__dirname, `../data/${filename}.csv`);
                 const fileBuffer = fs.readFileSync(filePath);
@@ -144,11 +140,15 @@ exports.devicesMonthly = async (req, res) => {
             });
         });
         const days = {};
+        
         records.flat().forEach((entry) => {
             const day = moment(entry.date).startOf('day').format('DD');
             days[day] = days[day] || {};
             days[day][entry.type] = (days[day][entry.type] || 0) + entry.consumption;
         });
+
+        
+
         Object.keys(days).forEach((day) => {
             const sorted = {};
 
@@ -174,11 +174,11 @@ exports.devicesMonthly = async (req, res) => {
                 ...days[day]
             };
         });
+        
         const result = {
             data: formatted,
             columns
         }
-
         res.send(result);
     }catch(error){
         console.log(error);
