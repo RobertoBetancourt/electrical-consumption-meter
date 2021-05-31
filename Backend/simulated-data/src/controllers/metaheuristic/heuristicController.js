@@ -26,7 +26,7 @@ exports.optDevicesMonthly = async (req, res) => {
         response = await response.json();
         const devices = response.items;
 
-        /*Delcaración de arreglos auxiliares para la preparación de los datos
+        /*Declaración de arreglos auxiliares para la preparación de los datos
         aux_columns almacena los headers esperados por la MH*/
         let columns = ['day'];
         const aux_columns = ['Calefactor','Aire','Ventilador','Secadora','Lavatrastes','Estufa','Microondas','Refrigerador', 'Lavadora','Foco'];
@@ -141,8 +141,16 @@ exports.optDevicesMonthly = async (req, res) => {
             });
         });
         
-        var margin = 10 - records.length; //Dispositivos extra necesarios para el funcionamiento de MH
         const consumption = {}
+        //Se calculan la cantidad de tipos distintos de dispositivos
+        var type_arr = [];
+        records.forEach((entry) =>{
+            if(!type_arr.includes(entry[0]['type'])){
+                type_arr.push(entry[0]['type']);
+            }
+        });
+        var margin = 10 - type_arr.length; //Dispositivos extra necesarios para el funcionamiento de MH
+
         consumption[''] = []; //Primer header
         consumption['Hora'] = []; //Segundo header
         /*Ciclo para generar datos auxiliares*/
@@ -183,7 +191,7 @@ exports.optDevicesMonthly = async (req, res) => {
                 }
             )
         });
-
+       
         
         consumption['Dia'] = []; //Ultimo header
         var count = 0;
@@ -205,7 +213,6 @@ exports.optDevicesMonthly = async (req, res) => {
                 return;
             }  
         })
-
         //Se separan los headers para añadirlos a los csv de entrada en la MH
         let headers = [];
         Object.keys(consumption).forEach(entry => {
@@ -226,6 +233,7 @@ exports.optDevicesMonthly = async (req, res) => {
         }*/
         let data = '';
         let state_data = '';
+        
         //Se toma el primer elemento de los datos, ya que todos los valores tiene la misma extensión
         consumption[headers[0]].forEach((entry, index) => {
             data += entry ; //Datos de id
@@ -259,7 +267,7 @@ exports.optDevicesMonthly = async (req, res) => {
         fs.writeFileSync(`src/controllers/metaheuristic/input-data/Estado_Diciembre20.csv`, '\n' + state_data.toString(), {flag: 'a'});
 
         //Ejecución de la metaherística, esta generará el archivo de salida Consumo_PSO_Diciembre21.csvc
-        exec("jupyter nbconvert --to notebook --execute src/controllers/metaheuristic/input-data/PSOConsumoDia.ipynb", (error, stdout, stderr) =>{
+        /*exec("jupyter nbconvert --to notebook --execute src/controllers/metaheuristic/input-data/PSOConsumoDia.ipynb", (error, stdout, stderr) =>{
             if (error) {
                 console.log(`error: ${error.message}`);
                 return;
@@ -268,20 +276,56 @@ exports.optDevicesMonthly = async (req, res) => {
                 console.log(`stderr: ${stderr}`);
                 return;
             }
+        });*/
+
+        const optPath = path.join(__dirname, `/input-data/Consumo_PSO_Diciembre21.csv`);
+        const optBuffer = fs.readFileSync(optPath);
+        const optString = optBuffer.toString()
+
+        let column = ['day'];
+        const days = {};
+        
+        const optimized_records = optString; 
+
+
+        console.log(optimized_records);
+
+        optimized_records.flat().forEach((entry) => {
+            const day = moment(entry.date).startOf('day').format('DD');
+            days[day] = days[day] || {};
+            days[day][entry.type] = (days[day][entry.type] || 0) + entry.consumption;
         });
-        days = {}
+
+        Object.keys(days).forEach((day) => {
+            const sorted = {};
+
+            Object.keys(days[day]).sort((type1, type2) => {
+                return days[day][type2] - days[day][type1];
+            }).forEach((type) => {
+                sorted[type] = days[day][type];
+            });
+
+            days[day] = sorted;
+        });
+        column = [column[0]].concat(column.slice(1).sort((column1, column2) => {
+            return Object.keys(days).reduce((acc, day) => {
+                return acc + days[day][column2];
+            }, 0) - Object.keys(days).reduce((acc, day) => {
+                return acc + days[day][column1];
+            }, 0)
+        }));
+
         const formatted = Object.keys(days).sort().map((day) => {
             return {
                 day,
                 ...days[day]
             };
         });
-        //console.log(formatted);
+        
         const result = {
             data: formatted,
-            columns
+            column
         }
-
         res.send(result);
 
 
