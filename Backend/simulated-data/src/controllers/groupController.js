@@ -298,7 +298,7 @@ exports.devicesWeekly = async (req, res) => {
                     }else{
                         return {
                             date: new Date(parseInt(entry.date)),
-                            consumption: parseInt(arr[index]),
+                            consumption: arr[index],
                             type
                         };
                     }
