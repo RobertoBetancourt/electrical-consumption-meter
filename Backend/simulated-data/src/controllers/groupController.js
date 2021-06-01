@@ -146,9 +146,7 @@ exports.devicesMonthly = async (req, res) => {
             days[day] = days[day] || {};
             days[day][entry.type] = (days[day][entry.type] || 0) + entry.consumption;
         });
-
         
-
         Object.keys(days).forEach((day) => {
             const sorted = {};
 
@@ -179,6 +177,9 @@ exports.devicesMonthly = async (req, res) => {
             data: formatted,
             columns
         }
+        //console.log(result);
+        console.log('WUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
+
         res.send(result);
     }catch(error){
         console.log(error);
@@ -204,7 +205,7 @@ exports.devicesWeekly = async (req, res) => {
         if(endMonth != startMonth){
             months.push(endMonth); 
         }
-
+        
         const devices = response.items;
 
         var getData = (filename) =>{
@@ -279,7 +280,7 @@ exports.devicesWeekly = async (req, res) => {
                 if(!columns.includes(type)){
                     columns.push(type);
                 }
-    
+                console.log("El mes" + month)
                 const recordPath = path.join(__dirname, `../data/${month}-${device.id}.csv`);
                 const recordBuffer = fs.readFileSync(recordPath);
                 const recordString = recordBuffer.toString();
@@ -407,11 +408,12 @@ exports.roomsMonthly = async (req, res) => {
 }
 
 exports.roomsWeekly = async (req, res) => {
+    console.log("Hola estoy en rooms Weekly");
     await generateData(0);
     try{
         let response = await fetch('http://localhost:5000/devices');
         response = await response.json();
-
+        console.log(req.query);
         const weekStart = moment(req.query.week);
         const weekEnd = moment(req.query.week).add(6, 'days');
     
@@ -427,6 +429,7 @@ exports.roomsWeekly = async (req, res) => {
         let total = 0;
         months.forEach((month) => {
             devices.forEach((device) => {
+                console.log("El mes " + month)
                 const recordPath = path.join(__dirname, `../data/${month}-${device.id}.csv`);
                 const recordBuffer = fs.readFileSync(recordPath);
                 const recordString = recordBuffer.toString();

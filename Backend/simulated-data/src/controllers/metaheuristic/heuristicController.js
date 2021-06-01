@@ -3,6 +3,7 @@ const path = require('path');
 const fetch = require('node-fetch');
 const parse = require('csv-parse/lib/sync');
 const { exec } = require("child_process");
+const csv = require('csv-parser');
 /* 
 Este controlador se encarga de utilizar la metaheuristica (MH)
 de la Dra. Blanca Nydia.
@@ -203,7 +204,13 @@ exports.optDevicesMonthly = async (req, res) => {
                 consumption[entry].forEach((value, index)=>{
                     consumption[''].push(count);
                     consumption['Hora'].push(count);
-                    consumption['Dia'].push(day);
+                    if(day.toString().length === 1){
+                        var val = '0'+day.toString()
+                        consumption['Dia'].push(val);
+                    }else{
+                        consumption['Dia'].push(day.toString());
+                    }   
+                    
                     count++;
                     if(count == 24){
                         count = 0;
@@ -277,26 +284,53 @@ exports.optDevicesMonthly = async (req, res) => {
                 return;
             }
         });*/
+        var results = [];
 
         const optPath = path.join(__dirname, `/input-data/Consumo_PSO_Diciembre21.csv`);
-        const optBuffer = fs.readFileSync(optPath);
-        const optString = optBuffer.toString()
-
+        const readResult = async() => {
+            return new Promise(resolve =>{
+                const optBuffer = fs.createReadStream(optPath)
+                    .pipe(csv())
+                    .on('data', (data) => results.push(data))
+                    .on('error', ()=> console.log('Algo salio mal'))
+                    .on('finish', resolve);
+            })
+        }
+        await readResult();
         let column = ['day'];
-        const days = {};
-        
-        const optimized_records = optString; 
-
-
-        console.log(optimized_records);
-
-        optimized_records.flat().forEach((entry) => {
-            const day = moment(entry.date).startOf('day').format('DD');
+        var days = {};
+        var used_array = []
+        let v = type_arr.length;
+        results.forEach((entry) => {
+            const day = entry['Dia'];
             days[day] = days[day] || {};
-            days[day][entry.type] = (days[day][entry.type] || 0) + entry.consumption;
+            Object.keys(entry).forEach((value, index) =>{
+                if(index > v+1){return}
+                if(value !== '' && value !== 'Dia' && value != 'Hora'){
+                    used_array.push(value);
+                    days[day][value]=  (parseInt(days[day][value]) || 0) + parseInt(entry[value])
+                }
+            });
+        });
+        const days_optimized = {};
+        //console.log(type_arr);
+        Object.keys(days).forEach((entry) => {
+            if(entry.length === 1){
+                days_optimized['0'+entry] = {};
+            }else{ days_optimized[entry] = {};}
+            
+            type_arr.forEach((value, index) => {
+                if(entry.length === 1){
+                    days_optimized['0'+entry][value] = days[entry][used_array[index]];
+                }else{ days_optimized[entry][value] = days[entry][used_array[index]];}
+                
+            });
         });
 
+        days = days_optimized;
+
         Object.keys(days).forEach((day) => {
+           
             const sorted = {};
 
             Object.keys(days[day]).sort((type1, type2) => {
@@ -324,11 +358,9 @@ exports.optDevicesMonthly = async (req, res) => {
         
         const result = {
             data: formatted,
-            column
+            columns
         }
         res.send(result);
-
-
     }catch(error){
         console.log(error);
         res.status(500).send({

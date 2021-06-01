@@ -90,7 +90,7 @@ class GenerateChart extends React.PureComponent {
         if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             //Second Line
-            //let response_3= await fetch(`http://localhost:3001/groups/optMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
+            //let response_2= await fetch(`http://localhost:3001/groups/optMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             
             let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
             if(response.status === 200){
@@ -98,6 +98,8 @@ class GenerateChart extends React.PureComponent {
 
                 response_2 = await response_2.json(); //Second Line
 
+                //response_3 = await response_3.json();
+                //console.log(response_3);
                 this.setState({
                     status: true
                 });
@@ -257,7 +259,7 @@ class GenerateChart extends React.PureComponent {
                     return y(point.value);
                 }).attr('r', (point, index) => {
                     return 5;
-                }).style('fill', '#fcb0b5').on('mouseover', function(event){
+                }).style('fill', '#000000').on('mouseover', function(event){
                     d3.select(this).transition().duration(200).style('fill', '#d30715');
 
                     const [xPosition, yPosition] = d3.pointer(event, this);
@@ -296,6 +298,7 @@ class GenerateChart extends React.PureComponent {
                 });
             }
         }else{
+            console.log(this.state.selectedWeek.format('YYYY-MM-DD'))
             let response = await fetch(`http://localhost:3001/groups/devicesWeekly?week=${this.state.selectedWeek.format('YYYY-MM-DD')}&room=${this.state.room}`);
             console.log("response was %O", response);  
 
