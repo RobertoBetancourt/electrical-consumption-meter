@@ -10,8 +10,8 @@ import json
 
 config = {
   'user': 'root',
-  'passwd': '',
-  'host': 'localhost',
+  'passwd': 'secret',
+  'host': '35.226.103.226',
   'database': 'IotDB'
 }
 
