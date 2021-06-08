@@ -22,7 +22,7 @@ class StageComponent extends React.Component{
     }
     
     componentDidMount(){
-      fetch("http://localhost:5000/stageCountDevices?stage_id_stage=" + this.state.id)
+      fetch("https://arcane-garden-46177.herokuapp.com/stageCountDevices?stage_id_stage=" + this.state.id)
       .then(res => res.json())
       .then(
         (result) => {
@@ -33,7 +33,7 @@ class StageComponent extends React.Component{
         }
       ) 
 
-      fetch("http://localhost:5000/stageCountUsers?stage_id_stage=" + this.state.id)
+      fetch("https://arcane-garden-46177.herokuapp.com/stageCountUsers?stage_id_stage=" + this.state.id)
       .then(res => res.json())
       .then(
         (result) => {

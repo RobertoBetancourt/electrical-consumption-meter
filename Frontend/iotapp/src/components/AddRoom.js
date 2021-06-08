@@ -37,7 +37,7 @@ class GenerateRoom extends React.Component{
         this.createRoom(name, type, stage);
       } 
     };
-    request.open('GET', 'http://localhost:5000/checkRoom?name_room=' + name);
+    request.open('GET', 'https://arcane-garden-46177.herokuapp.com/checkRoom?name_room=' + name);
     request.send(); 
   }
 
@@ -54,7 +54,7 @@ class GenerateRoom extends React.Component{
         console.warn('error');
       }
     };
-    request.open('GET', 'http://localhost:5000/insertRoom?name='+ name +'&id_scenario='+ type +'&id_stage='+ stage);
+    request.open('GET', 'hhttps://arcane-garden-46177.herokuapp.com/insertRoom?name='+ name +'&id_scenario='+ type +'&id_stage='+ stage);
     request.send();  
   }
 

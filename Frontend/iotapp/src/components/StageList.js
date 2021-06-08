@@ -24,7 +24,7 @@ class GenerateStageList extends React.Component{
   }
 
   componentDidMount() {
-    fetch("http://localhost:5000/searchStage?id_admin=" + this.state.id_admin)
+    fetch("https://arcane-garden-46177.herokuapp.com/searchStage?id_admin=" + this.state.id_admin)
     .then(res => res.json())
     .then(
       (result) => {
@@ -42,7 +42,7 @@ class GenerateStageList extends React.Component{
       }
     )
 
-    fetch("http://localhost:5000/getStage?id_admin=" + this.state.id_admin)
+    fetch("https://arcane-garden-46177.herokuapp.com/getStage?id_admin=" + this.state.id_admin)
     .then(res => res.json())
     .then(
       (result) => {

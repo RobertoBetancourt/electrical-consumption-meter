@@ -77,7 +77,7 @@ export default function Device({ device: { id, type, name, state }, offDevice, d
         console.warn('error');
       }
     };
-    request.open('GET', 'http://localhost:5000/deleteDevice?id_device='+ id);
+    request.open('GET', 'https://arcane-garden-46177.herokuapp.com/deleteDevice?id_device='+ id);
     request.send(); 
   }
 

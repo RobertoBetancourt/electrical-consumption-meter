@@ -25,7 +25,7 @@ class RoomComponent extends React.Component{
   }
   
   componentDidMount(){
-    fetch("http://localhost:5000/countDevices?id_room=" + this.state.id)
+    fetch("https://arcane-garden-46177.herokuapp.com/countDevices?id_room=" + this.state.id)
     .then(res => res.json())
     .then(
       (result) => {

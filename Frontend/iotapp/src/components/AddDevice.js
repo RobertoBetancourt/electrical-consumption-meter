@@ -43,7 +43,7 @@ class GenerateDevice extends React.Component{
         this.showAlertRepeatedName();
       } 
     };
-    request.open('GET', 'http://localhost:5000/searchDevice?name_device=' + name + '&id_room='+ room);
+    request.open('GET', 'https://arcane-garden-46177.herokuapp.com/searchDevice?name_device=' + name + '&id_room='+ room);
     request.send(); 
   }
 
@@ -60,7 +60,7 @@ class GenerateDevice extends React.Component{
         console.warn('error');
       } 
     };
-    request.open('GET', 'http://localhost:5000/insertDevice?name_device='+name+'&id_room='+room+'&type_idtype='+type);
+    request.open('GET', 'https://arcane-garden-46177.herokuapp.com/insertDevice?name_device='+name+'&id_room='+room+'&type_idtype='+type);
     request.send(); 
   }
 

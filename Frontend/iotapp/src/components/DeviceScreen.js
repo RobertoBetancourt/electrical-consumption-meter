@@ -21,7 +21,7 @@ class GenerateDeviceScreen extends React.Component{
   }
 
   componentDidMount() {
-    fetch("http://localhost:5000/getNameRoom?id_room=" + this.state.id)
+    fetch("https://arcane-garden-46177.herokuapp.com/getNameRoom?id_room=" + this.state.id)
     .then(res => res.json())
     .then(
       (result) => {
@@ -45,7 +45,7 @@ class GenerateDeviceScreen extends React.Component{
         console.warn('error');
       }
     };
-    request.open('GET', 'http://localhost:5000/deleteRoom?id_room='+ this.state.id);
+    request.open('GET', 'https://arcane-garden-46177.herokuapp.com/deleteRoom?id_room='+ this.state.id);
     request.send(); 
   }
 

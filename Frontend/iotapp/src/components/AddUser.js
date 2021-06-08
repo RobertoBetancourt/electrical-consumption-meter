@@ -38,7 +38,7 @@ class GenerateUser extends React.Component{
         console.warn('error');
       }
     };
-    request.open('GET', 'http://localhost:5000/insert?name='+ name +'&email='+ email +'&password='+ password +'&admin=1&stage=1');
+    request.open('GET', 'https://arcane-garden-46177.herokuapp.com/insert?name='+ name +'&email='+ email +'&password='+ password +'&admin=1&stage=1');
     request.send();  
   }
 

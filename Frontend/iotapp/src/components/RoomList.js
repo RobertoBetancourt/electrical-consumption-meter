@@ -24,7 +24,7 @@ class GenerateRoomList extends React.Component{
 
   componentDidMount() {
     console.log("[ID Stage] ", this.state.id);
-    fetch("http://localhost:5000/searchRoom?id_stage=" + this.state.id)
+    fetch("https://arcane-garden-46177.herokuapp.com/searchRoom?id_stage=" + this.state.id)
     .then(res => res.json())
     .then(
       (result) => {

@@ -29,7 +29,7 @@ class ProfileComponent extends React.Component{
   }
 
   componentDidMount() {
-    fetch("http://localhost:5000/showAllUser?id_admin=" +  this.state.id)
+    fetch("https://arcane-garden-46177.herokuapp.com/showAllUser?id_admin=" +  this.state.id)
     .then(res => res.json())
     .then(
       (result) => {
@@ -47,7 +47,7 @@ class ProfileComponent extends React.Component{
       }
     )
 
-    fetch("http://localhost:5000/searchAdmin?id_admin=" + this.state.id)
+    fetch("https://arcane-garden-46177.herokuapp.com/searchAdmin?id_admin=" + this.state.id)
     .then(res => res.json())
     .then(
       (result) => {

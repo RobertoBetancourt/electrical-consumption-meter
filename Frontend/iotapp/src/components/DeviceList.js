@@ -24,7 +24,7 @@ class GenerateDeviceList extends React.Component{
 
   componentDidMount() {
     console.log("[ID Room] " + this.state.id);
-    fetch("http://localhost:5000/showAllDevice?id_room=" + this.state.id)
+    fetch("https://arcane-garden-46177.herokuapp.com/showAllDevice?id_room=" + this.state.id)
     .then(res => res.json())
     .then(
       (result) => {
