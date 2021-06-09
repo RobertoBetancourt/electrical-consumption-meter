@@ -43,8 +43,8 @@ class GenerateChart extends React.PureComponent {
             })
         });
 
-        this.buildDeviceChart();
-        this.buildRoomChart();
+        //this.buildDeviceChart();
+        this.buildRoomChart(); 
     }
 
     handleViewSelection(view){
@@ -90,16 +90,14 @@ class GenerateChart extends React.PureComponent {
         if(this.state.view === 'Mensual'){
             let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             //Second Line
-            //let response_2= await fetch(`http://localhost:3001/groups/optMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
+            let response_2= await fetch(`http://localhost:3001/groups/optMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             
-            let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
+            //let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
             if(response.status === 200){
                 response = await response.json();
 
                 response_2 = await response_2.json(); //Second Line
 
-                //response_3 = await response_3.json();
-                //console.log(response_3);
                 this.setState({
                     status: true
                 });
@@ -165,7 +163,8 @@ class GenerateChart extends React.PureComponent {
                 const x = d3.scalePoint().domain([0].concat(data.map((point) => {
                     return point.day;
                 }))).range([margin.left, width - margin.right]);
-                const y = d3.scaleLinear().domain([d3.min(series, (serie) => {
+
+                const y = d3.scaleLinear().domain([d3.min(serie_2, (serie) => {
                     return d3.min(serie, (point) => {
                         return point.value;
                     });
@@ -174,6 +173,7 @@ class GenerateChart extends React.PureComponent {
                         return point.value;
                     });
                 })]).range([height - margin.bottom, margin.top]);
+
                 const z = d3.scaleOrdinal(columns.slice(1), d3.schemeCategory10);
 
                 const xAxis = (g) => {
@@ -196,7 +196,7 @@ class GenerateChart extends React.PureComponent {
 
                 serie.append('path').attr('fill', 'none').attr('stroke', (point) => {
                     return z(point[0].key);
-                }).attr('stroke-width', 1.5).attr('d', d3.line().x((point) => {
+                }).attr('stroke-width', 1.5).attr('stroke', 'red').attr('d', d3.line().x((point) => {
                     return x(point.day);
                 }).y((point) => {
                     return y(point.value);
@@ -219,8 +219,8 @@ class GenerateChart extends React.PureComponent {
                     return y(point.value);
                 }).attr('r', (point, index) => {
                     return 5;
-                }).style('fill', '#fcb0b5').on('mouseover', function(event){
-                    d3.select(this).transition().duration(200).style('fill', '#d30715');
+                }).style('fill', '#000000').on('mouseover', function(event){
+                    d3.select(this).transition().duration(200).style('fill', '#2d572c');
 
                     const [xPosition, yPosition] = d3.pointer(event, this);
                     const domain = x.domain();
@@ -233,7 +233,7 @@ class GenerateChart extends React.PureComponent {
                     tooltip.append('text').attr('id', 'label').text(Math.round(point.consumption)).attr('y', yPosition - 12).attr('x', xPosition);
                     tooltip.append('line').attr('id', 'path').attr('x1', xPosition).attr('y1', yPosition).attr('x2', xPosition).attr('y2', height - margin.bottom).attr('stroke', 'black').attr('stroke-dasharray', ('3, 3'));
                 }).on('mouseout', function(event){
-                    d3.select(this).transition().duration(500).style('fill', '#fcb0b5');
+                    d3.select(this).transition().duration(500).style('fill', '#2d572c');
 
                     tooltip.selectAll('#label').remove();
                     tooltip.selectAll('#path').remove();
@@ -251,7 +251,7 @@ class GenerateChart extends React.PureComponent {
                     }), response.columns);
                 }); 
 
-                series_2.append('g').attr('font-family', 'sans-serif').attr('font-size', 10).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('text-anchor', 'middle').selectAll('text').data((point) => {
+                series_2.append('g').attr('font-family', 'sans-serif').attr("stroke", "red").attr('font-size', 10).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('text-anchor', 'middle').selectAll('text').data((point) => {
                     return point;
                 }).join('circle').attr('cx', (point) => {
                     return x(point.day);
@@ -259,7 +259,7 @@ class GenerateChart extends React.PureComponent {
                     return y(point.value);
                 }).attr('r', (point, index) => {
                     return 5;
-                }).style('fill', '#000000').on('mouseover', function(event){
+                }).style('fill', '#fcb0b5').on('mouseover', function(event){
                     d3.select(this).transition().duration(200).style('fill', '#d30715');
 
                     const [xPosition, yPosition] = d3.pointer(event, this);
@@ -271,7 +271,7 @@ class GenerateChart extends React.PureComponent {
                     point.consumption = y.invert(yPosition);
 
                     tooltip.append('text').attr('id', 'label').text(Math.round(point.consumption)).attr('y', yPosition - 12).attr('x', xPosition);
-                    tooltip.append('line').attr('id', 'path').attr('x1', xPosition).attr('y1', yPosition).attr('x2', xPosition).attr('y2', height - margin.bottom).attr('stroke', 'black').attr('stroke-dasharray', ('3, 3'));
+                    tooltip.append('line').attr('id', 'path').attr('x1', xPosition).attr('y1', yPosition).attr('x2', xPosition).attr('y2', height - margin.bottom).attr('stroke', 'red').attr("stroke", "red").attr('stroke-dasharray', ('3, 3'));
                 }).on('mouseout', function(event){
                     d3.select(this).transition().duration(500).style('fill', '#fcb0b5');
 

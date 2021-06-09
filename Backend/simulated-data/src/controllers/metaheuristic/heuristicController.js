@@ -30,7 +30,7 @@ exports.optDevicesMonthly = async (req, res) => {
         /*Declaración de arreglos auxiliares para la preparación de los datos
         aux_columns almacena los headers esperados por la MH*/
         let columns = ['day'];
-        const aux_columns = ['Calefactor','Aire','Ventilador','Secadora','Lavatrastes','Estufa','Microondas','Refrigerador', 'Lavadora','Foco'];
+        const aux_columns = ['Calefactor','Aire','Ventilador','Secadora','Lavatrastes','Estufa','Refrigerador', 'Lavadora','Foco'];
         //Función que lee los datos de los archivos de consumo REALES
         var getData = (filename) =>{
             const filePath = path.join(__dirname, `${filename}.csv`);
@@ -48,6 +48,7 @@ exports.optDevicesMonthly = async (req, res) => {
         }).map((device) => {
            
             let arr = [];
+            let index = 0;
             let type;
             switch(device.type){
                 //Dependiendo del tipo de dispositivo se utilizan datos simulados o reales
@@ -55,7 +56,7 @@ exports.optDevicesMonthly = async (req, res) => {
                     type = 'Bocinas';
                     break;
                 case 2: //Simulados
-                    type = 'Consolas';
+                    type = 'Consola';
                     break;
                 case 3: //Simulados
                     type = 'Luces';
@@ -64,15 +65,18 @@ exports.optDevicesMonthly = async (req, res) => {
                     type = 'Televisiones';
                     break;
                 case 5: //Reales
-                    type = 'Clima';
-                    aux_columns.splice(1, 1); 
+                    type = 'Aire';
+                    index = aux_columns.indexOf(type)
+                    aux_columns.splice(index, 1); 
+                    console.log('Hola soy ' + type);
+                    console.log(aux_columns);
                     /*Elimina el header de aux_columns para poder crear los datos auxiliares 
                     de ser necesarios para no repetir dispositivos
                     */ 
                     arr = getData('../../data/aireAcondicionado'); //Obtención de datos reales
                     break;
                 case 6: //Simulados
-                    type = 'Impresoras';
+                    type = 'Impresora';
                     break;
                 case 7: //Simulados
                     type = 'Lavadoras';
@@ -94,17 +98,23 @@ exports.optDevicesMonthly = async (req, res) => {
                     break;
                 case 15: //Reales
                     type = 'Calefactor';
-                    aux_columns.splice(0, 1);
+                    index = aux_columns.indexOf(type)
+                    aux_columns.splice(index, 1); 
+                    console.log(aux_columns);
                     arr = getData('../../data/calefactor'); //Obtención de datos reales
                     break;
                 case 16: //Reales
                     type = 'Secadora';
-                    aux_columns.splice(3, 1);
+                    index = aux_columns.indexOf(type)
+                    aux_columns.splice(index, 1); 
+                    console.log(aux_columns);
                     arr = getData('../../data/secadora'); //Obtención de datos reales
                     break;
                 case 17: //Reales
                     type = 'Ventilador';
-                    aux_columns.splice(2, 1);
+                    index = aux_columns.indexOf(type)
+                    aux_columns.splice(index, 1);
+                    console.log(aux_columns);
                     arr = getData('../../data/ventilador'); //Obtención de datos reales
                     break;
             }
@@ -127,13 +137,13 @@ exports.optDevicesMonthly = async (req, res) => {
                 //Dependiendo del uso de datos (real o simulado) se generan los mapas de consumo
                 if(arr.length === 0){
                     return {
-                        consumption: parseInt(entry.consumption),
+                        consumption: parseFloat(entry.consumption),
                         type,
                         day: index
                     };
                 }else{
                     return {
-                        consumption: arr[index],
+                        consumption: parseFloat(arr[index]),
                         type,
                         day: index
                     };
@@ -141,7 +151,8 @@ exports.optDevicesMonthly = async (req, res) => {
                 
             });
         });
-        
+        //console.log(records);
+
         const consumption = {}
         //Se calculan la cantidad de tipos distintos de dispositivos
         var type_arr = [];
@@ -150,6 +161,7 @@ exports.optDevicesMonthly = async (req, res) => {
                 type_arr.push(entry[0]['type']);
             }
         });
+
         var margin = 10 - type_arr.length; //Dispositivos extra necesarios para el funcionamiento de MH
 
         consumption[''] = []; //Primer header
@@ -168,13 +180,15 @@ exports.optDevicesMonthly = async (req, res) => {
             /*Dependiendo de cuantos headers disponibles haya en aux_columns,
             se toma uno aleatoriamente */
             let columns_length = aux_columns.length;
-            let type = aux_columns.splice(Math.floor(Math.random() * columns_length), 1);
+            let type = aux_columns.splice(Math.floor(Math.random() * columns_length), 1)[0];
+            
             //Se obtienen los datos
             let arr = getData(`auxiliar-data/${type}`);
             //Se genera el mapa auxiliar
             var aux = record.map((entry, index) => {
                 return {
-                    consumption: arr[index],
+                    //consumption: arr[index],
+                    consumption: 0,
                     type,
                     day: index
                 };
@@ -185,6 +199,7 @@ exports.optDevicesMonthly = async (req, res) => {
             margin--;
         }
         //Se añaden los dispositivos al mapa de cosnumos finales
+        //console.log(records);
         records.forEach((entry) => {
             consumption[entry[0].type] = []
             entry.forEach((device) => {
@@ -196,6 +211,7 @@ exports.optDevicesMonthly = async (req, res) => {
         
         consumption['Dia'] = []; //Ultimo header
         var count = 0;
+        var count2 = 0.0;
         var day = 1;
         /*Se generan los datos del primer, segundo y último header
         que representan el id, la hora y el día. */
@@ -203,7 +219,7 @@ exports.optDevicesMonthly = async (req, res) => {
             if(index === 2){
                 consumption[entry].forEach((value, index)=>{
                     consumption[''].push(count);
-                    consumption['Hora'].push(count);
+                    consumption['Hora'].push(count2);
                     if(day.toString().length === 1){
                         var val = '0'+day.toString()
                         consumption['Dia'].push(val);
@@ -212,6 +228,7 @@ exports.optDevicesMonthly = async (req, res) => {
                     }   
                     
                     count++;
+                    count2++;
                     if(count == 24){
                         count = 0;
                         day++;
@@ -240,7 +257,6 @@ exports.optDevicesMonthly = async (req, res) => {
         }*/
         let data = '';
         let state_data = '';
-        
         //Se toma el primer elemento de los datos, ya que todos los valores tiene la misma extensión
         consumption[headers[0]].forEach((entry, index) => {
             data += entry ; //Datos de id
@@ -274,16 +290,22 @@ exports.optDevicesMonthly = async (req, res) => {
         fs.writeFileSync(`src/controllers/metaheuristic/input-data/Estado_Diciembre20.csv`, '\n' + state_data.toString(), {flag: 'a'});
 
         //Ejecución de la metaherística, esta generará el archivo de salida Consumo_PSO_Diciembre21.csvc
-        /*exec("jupyter nbconvert --to notebook --execute src/controllers/metaheuristic/input-data/PSOConsumoDia.ipynb", (error, stdout, stderr) =>{
-            if (error) {
-                console.log(`error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`stderr: ${stderr}`);
-                return;
-            }
-        });*/
+        const executeHeuristic = () =>{
+            return new Promise((resolve, reject) => {
+                exec("jupyter nbconvert --to notebook --execute src/controllers/metaheuristic/input-data/PSOConsumoDia.ipynb", (error, stdout, stderr) =>{
+                    if (error) {
+                        console.log(`error: ${error.message}`);
+                    }
+                    if (stderr) {
+                        console.log(`stderr: ${stderr}`);
+                    }
+                resolve(stdout? stdout : stderr);
+                });
+            });
+        }
+        const helper = await executeHeuristic();
+        console.log(helper);
+        console.log('Terminó la heurística');
         var results = [];
 
         const optPath = path.join(__dirname, `/input-data/Consumo_PSO_Diciembre21.csv`);
@@ -296,7 +318,9 @@ exports.optDevicesMonthly = async (req, res) => {
                     .on('finish', resolve);
             })
         }
+
         await readResult();
+
         let column = ['day'];
         var days = {};
         var used_array = []
@@ -312,8 +336,8 @@ exports.optDevicesMonthly = async (req, res) => {
                 }
             });
         });
+        
         const days_optimized = {};
-        //console.log(type_arr);
         Object.keys(days).forEach((entry) => {
             if(entry.length === 1){
                 days_optimized['0'+entry] = {};
@@ -325,12 +349,12 @@ exports.optDevicesMonthly = async (req, res) => {
                 }else{ days_optimized[entry][value] = days[entry][used_array[index]];}
                 
             });
+            
         });
-
+        
         days = days_optimized;
-
         Object.keys(days).forEach((day) => {
-           
+            
             const sorted = {};
 
             Object.keys(days[day]).sort((type1, type2) => {
@@ -341,6 +365,7 @@ exports.optDevicesMonthly = async (req, res) => {
 
             days[day] = sorted;
         });
+        //console.log(days);
         column = [column[0]].concat(column.slice(1).sort((column1, column2) => {
             return Object.keys(days).reduce((acc, day) => {
                 return acc + days[day][column2];
@@ -361,6 +386,7 @@ exports.optDevicesMonthly = async (req, res) => {
             columns
         }
         res.send(result);
+
     }catch(error){
         console.log(error);
         res.status(500).send({

@@ -5,39 +5,8 @@ const moment = require('moment');
 const parse = require('csv-parse/lib/sync');
 const stringify = require('csv-stringify/lib/sync');
 
-const generateData = async (offset) => {
-    let response = await fetch('http://localhost:5000/devices');
-    response = await response.json();
-
-    const start = moment().subtract(offset, 'month').startOf('month');
-    let end = moment().subtract(offset, 'month').endOf('month');
-    const now = moment();
-    if(now.isBefore(end)){
-        end = now;
-    }
-
-    const devices = response.items;
-    const records = devices.map((device) => {
-        const record = [];
-        for(let hour = moment(start); hour.isBefore(end); hour = hour.add(1, 'hour')){
-            record.push({
-                date: hour.toDate(),
-                consumption: Math.floor(Math.random() * 100) + 1
-            });
-        }
-
-        return record;
-    });
-    records.forEach((record, index) => {
-        const recordString = stringify(record, {
-            header: true
-        });
-        fs.writeFileSync(`src/data/${start.format('YYYY-MM')}-${devices[index].id}.csv`, recordString);
-    });
-};
-
 exports.devicesMonthly = async (req, res) => {
-    await generateData(0);
+
     try{
         let response = await fetch('http://localhost:5000/devices');
         response = await response.json();
@@ -65,7 +34,7 @@ exports.devicesMonthly = async (req, res) => {
                     type = 'Bocinas';
                     break;
                 case 2:
-                    type = 'Consolas';
+                    type = 'Consola';
                     break;
                 case 3:
                     type = 'Luces';
@@ -78,7 +47,7 @@ exports.devicesMonthly = async (req, res) => {
                     arr = getData('aireAcondicionado');
                     break;
                 case 6:
-                    type = 'Impresoras';
+                    type = 'Impresora';
                     break;
                 case 7:
                     type = 'Lavadoras';
@@ -178,8 +147,6 @@ exports.devicesMonthly = async (req, res) => {
             columns
         }
         //console.log(result);
-        console.log('WUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
-
         res.send(result);
     }catch(error){
         console.log(error);
@@ -190,7 +157,7 @@ exports.devicesMonthly = async (req, res) => {
 };
 
 exports.devicesWeekly = async (req, res) => {
-    await generateData(0);
+
     console.log("Hola estoy en devices Weekly");
     try{
         let response = await fetch('http://localhost:5000/devices');
@@ -220,6 +187,7 @@ exports.devicesWeekly = async (req, res) => {
         }
 
         let columns = ['day'];
+        
         const records = months.map((month) => {
             return devices.filter((device) => {
                 return req.query.room == -1 || device.room_id == req.query.room;
@@ -280,7 +248,7 @@ exports.devicesWeekly = async (req, res) => {
                 if(!columns.includes(type)){
                     columns.push(type);
                 }
-                console.log("El mes" + month)
+
                 const recordPath = path.join(__dirname, `../data/${month}-${device.id}.csv`);
                 const recordBuffer = fs.readFileSync(recordPath);
                 const recordString = recordBuffer.toString();
@@ -299,14 +267,13 @@ exports.devicesWeekly = async (req, res) => {
                     }else{
                         return {
                             date: new Date(parseInt(entry.date)),
-                            consumption: arr[index],
+                            consumption: parseInt(arr[index]),
                             type
                         };
                     }
                 });
             });
         }).flat();
-       
         const days = {};
         records.flat().forEach((entry) => {
             const date = moment(entry.date).startOf('day');
@@ -351,7 +318,7 @@ exports.devicesWeekly = async (req, res) => {
             data: formatted,
             columns
         }
-
+        
         res.send(result);
     }catch(error){
         console.log(error);
@@ -362,7 +329,7 @@ exports.devicesWeekly = async (req, res) => {
 };
 
 exports.roomsMonthly = async (req, res) => {
-    await generateData(0);
+
     try{
         let response = await fetch('http://localhost:5000/devices');
         console.log("La respuesta mo: %O", response);
@@ -408,8 +375,7 @@ exports.roomsMonthly = async (req, res) => {
 }
 
 exports.roomsWeekly = async (req, res) => {
-    console.log("Hola estoy en rooms Weekly");
-    await generateData(0);
+
     try{
         let response = await fetch('http://localhost:5000/devices');
         response = await response.json();
@@ -429,7 +395,6 @@ exports.roomsWeekly = async (req, res) => {
         let total = 0;
         months.forEach((month) => {
             devices.forEach((device) => {
-                console.log("El mes " + month)
                 const recordPath = path.join(__dirname, `../data/${month}-${device.id}.csv`);
                 const recordBuffer = fs.readFileSync(recordPath);
                 const recordString = recordBuffer.toString();
