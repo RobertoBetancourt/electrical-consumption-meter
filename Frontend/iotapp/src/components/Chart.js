@@ -729,7 +729,7 @@ class GenerateChart extends React.PureComponent {
             const scale = d3.scaleOrdinal().domain(column).range(scheme);
             const legend = legendColor().scale(scale);
 
-            const svg = d3.select(this.refs.legend).append('svg').attr('width', 200);
+            const svg = d3.select(this.refs.legend1).append('svg').attr('width', 200);
             svg.append('g').attr('class', 'legendOrdinal').attr('transform', 'translate(20, 20)');
 
             svg.select('.legendOrdinal').call(legend);   
