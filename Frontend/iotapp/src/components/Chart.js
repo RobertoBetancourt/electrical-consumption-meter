@@ -43,8 +43,10 @@ class GenerateChart extends React.PureComponent {
             })
         });
 
-        //this.buildDeviceChart();
-        this.buildRoomChart(); 
+        this.buildDeviceChart();
+        this.buildDevice1Chart();
+        this.buildRoomChart();
+        //this.buildRoomChart1(); 
     }
 
     handleViewSelection(view){
@@ -52,6 +54,7 @@ class GenerateChart extends React.PureComponent {
             view
         }, () => {
             this.buildDeviceChart();
+            this.buildDevice1Chart();
             this.buildRoomChart();
         });
     }
@@ -61,7 +64,9 @@ class GenerateChart extends React.PureComponent {
             selectedMonth: month
         }, () => {
             this.buildDeviceChart();
+            this.buildDevice1Chart();
             this.buildRoomChart();
+            //this.buildRoomChart1();
         });
     }
 
@@ -70,7 +75,9 @@ class GenerateChart extends React.PureComponent {
             selectedWeek: moment(week).startOf('week')
         }, () => {
             this.buildDeviceChart();
+            this.buildDevice1Chart();
             this.buildRoomChart();
+            //this.buildRoomChart1();
         });
     }
 
@@ -80,8 +87,220 @@ class GenerateChart extends React.PureComponent {
             room
         }, () => {
             this.buildDeviceChart();
+            this.buildDevice1Chart();
         });
     }
+
+    async buildDevice1Chart(){
+        d3.select(this.refs.month1View).selectAll('*').remove();
+        d3.select(this.refs.week1View).selectAll('*').remove();
+
+        if(this.state.view == 'Mensual'){
+            let response = await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
+
+            if(response.status == 200){
+                response = await response.json();
+                this.setState({
+                    status: true
+                });
+
+                const data = response.data.map((point) => {
+                    let consumption = 0;
+                    Object.keys(point).forEach((type) => {
+                        if(type != 'day'){
+                            consumption += point[type];
+                        }
+                    });
+
+                    return {
+                        day: point.day,
+                        consumption
+                    };
+                });
+                const columns = ['day', 'consumption'];
+                const series = columns.slice(1).map((key) => {
+                    return data.map(({[key]: value, day}) => {
+                        return {
+                            key,
+                            day,
+                            value
+                        }
+                    });
+                });
+
+                const margin = {
+                    top: 30,
+                    right: 50, 
+                    bottom: 30,
+                    left: 40
+                };
+                const height = 400;
+                const width = 800;
+
+                const x = d3.scalePoint().domain([0].concat(data.map((point) => {
+                    return point.day;
+                }))).range([margin.left, width - margin.right]);
+                const y = d3.scaleLinear().domain([d3.min(series, (serie) => {
+                    return d3.min(serie, (point) => {
+                        return point.value;
+                    });
+                }) - 100, d3.max(series, (serie) => {
+                    return d3.max(serie, (point) => {
+                        return point.value;
+                    });
+                })]).range([height - margin.bottom, margin.top]);
+                const z = d3.scaleOrdinal(columns.slice(1), d3.schemeCategory10);
+
+                const xAxis = (g) => {
+                    return g.attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x).tickSizeOuter(0));
+                };
+                const yAxis = (g) => {
+                    return g.attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(null, 's'));
+                };
+
+                const svg = d3.select(this.refs.month1View).append('svg').attr('viewBox', [0, 0, width, height]);
+                const tooltip = svg.append('g');
+                svg.append('g').call(xAxis);
+                svg.append('g').call(yAxis);
+                svg.on('click', (event) => {
+                    d3.select(this.refs.day1View).selectAll('*').remove();
+                });
+
+                const serie = svg.append('g').selectAll('g').data(series).join('g');
+                serie.append('path').attr('fill', 'none').attr('stroke', (point) => {
+                    return z(point[0].key);
+                }).attr('stroke-width', 1.5).attr('d', d3.line().x((point) => {
+                    return x(point.day);
+                }).y((point) => {
+                    return y(point.value);
+                }));
+                
+                const that = this;
+                serie.append('g').attr('font-family', 'sans-serif').attr('font-size', 10).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('text-anchor', 'middle').selectAll('text').data((point) => {
+                    return point;
+                }).join('circle').attr('cx', (point) => {
+                    return x(point.day);
+                }).attr('cy', (point) => {
+                    return y(point.value);
+                }).attr('r', (point, index) => {
+                    return 5;
+                }).style('fill', '#fcb0b5').on('mouseover', function(event){
+                    d3.select(this).transition().duration(200).style('fill', '#d30715');
+
+                    const [xPosition, yPosition] = d3.pointer(event, this);
+                    const domain = x.domain();
+                    const range = x.range();
+                    const rangePoints = d3.range(range[0], range[1], x.step());
+                    const point = {};
+                    point.day = domain[d3.bisect(rangePoints, xPosition)];
+                    point.consumption = y.invert(yPosition);
+
+                    tooltip.append('text').attr('id', 'label').text(Math.round(point.consumption)).attr('y', yPosition - 12).attr('x', xPosition);
+                    tooltip.append('line').attr('id', 'path').attr('x1', xPosition).attr('y1', yPosition).attr('x2', xPosition).attr('y2', height - margin.bottom).attr('stroke', 'black').attr('stroke-dasharray', ('3, 3'));
+                }).on('mouseout', function(event){
+                    d3.select(this).transition().duration(500).style('fill', '#fcb0b5');
+
+                    tooltip.selectAll('#label').remove();
+                    tooltip.selectAll('#path').remove();
+                }).on('click', function(event){
+                    event.stopPropagation();
+
+                    const xPosition = d3.pointer(event, this)[0]
+                    const domain = x.domain();
+                    const range = x.range();
+                    const rangePoints = d3.range(range[0], range[1], x.step());
+                    const day = domain[d3.bisect(rangePoints, xPosition)];
+                    
+                    that.buildDayChart(response.data.filter((point) => {
+                        return point.day == day;
+                    }), response.columns);
+                });
+
+                this.buildLegend1(response.data, response.columns.slice(1));
+            }else{
+                this.setState({
+                    status: false
+                });
+            }
+        }else{
+            let response = await fetch(`http://localhost:3001/groups/devicesWeekly?week=${this.state.selectedWeek.format('YYYY-MM-DD')}&room=${this.state.room}`);
+            
+            if(response.status == 200){
+                response = await response.json();
+                this.setState({
+                    status: true
+                });
+
+                const {data, columns} = response;
+                const series = d3.stack().keys(columns.slice(1))(data).map((point) => {
+                    point.forEach((entry) => {
+                        entry.key = point.key;
+                    });
+
+                    return point;
+                });
+
+                const margin = {
+                    top: 30,
+                    right: 0,
+                    bottom: 30,
+                    left: 40
+                };
+                const height = 400;
+                const width = 800;
+
+                const x = d3.scaleBand().domain(data.map((point) => {
+                    return point.day;
+                })).range([margin.left, width - margin.right]).padding(0.1);
+                const y = d3.scaleLinear().domain([0, d3.max(series, (point) => {
+                    return d3.max(point, (point) => {
+                        return point[1];
+                    });
+                })]).rangeRound([height - margin.bottom, margin.top]);
+                
+                const xAxis = (g) => {
+                    return g.attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x).tickSizeOuter(0)).call((g) => {
+                        return g.selectAll('.domain').remove();
+                    });
+                };
+                const yAxis = (g) => {
+                    return g.attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(null, 's')).call((g) => {
+                        return g.selectAll('.domain').remove();
+                    });
+                };
+
+                const color = d3.scaleOrdinal().domain(series.map((point) => {
+                    return point.key;
+                })).range(d3.schemeCategory10).unknown('#ccc');
+
+                const svg = d3.select(this.refs.weekView).append('svg').attr('viewBox', [0, 0, width, height]);
+                svg.append('g').selectAll('g').data(series).join('g').attr('fill', (point) => {
+                    return color(point.key);
+                }).selectAll('rect').data((point) => {
+                    return point
+                }).join('rect').attr('x', (point, index) => {
+                    return x(point.data.day);
+                }).attr('y', (point) => {
+                    return y(point[1]);
+                }).attr('height', (point) => {
+                    return y(point[0]) - y(point[1]);
+                }).attr('width', x.bandwidth()).append('title').text((point) => {
+                    return `${point.data.day} ${point.key}
+                    ${point.data[point.key]}`;
+                });
+                
+                svg.append('g').call(xAxis);
+                svg.append('g').call(yAxis);
+
+                this.buildLegend1(data, columns.slice(1));
+            }else{
+                this.setState({
+                    status: false
+                });
+            }
+        }
+    }
+    
 
     async buildDeviceChart(){
         d3.select(this.refs.monthView).selectAll('*').remove();
@@ -93,7 +312,7 @@ class GenerateChart extends React.PureComponent {
             let response_2= await fetch(`http://localhost:3001/groups/optMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=${this.state.room}`);
             
             //let response_2= await fetch(`http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}&room=1`);
-            if(response.status === 200){
+            if(response_2.status === 200 && response.status === 200){
                 response = await response.json();
 
                 response_2 = await response_2.json(); //Second Line
@@ -475,6 +694,48 @@ class GenerateChart extends React.PureComponent {
         }     
     }
 
+    buildLegend1(data, types){
+        d3.select(this.refs.legend1).selectAll('*').remove();
+
+        const consumptionByType = {};
+        let totalConsumption = 0;
+
+        data.forEach((point) => {
+            Object.keys(point).forEach((type) => {
+                if(type !== 'day'){
+                    if(!consumptionByType[type]){
+                        consumptionByType[type] = {};
+                    }
+                    
+                    consumptionByType[type].consumption = (consumptionByType[type].consumption || 0) + point[type];
+                    totalConsumption += point[type];
+                }
+            })
+        });
+        Object.keys(consumptionByType).forEach((type) => {
+            consumptionByType[type].percentage = Math.round(consumptionByType[type].consumption / totalConsumption * 100);
+        });
+
+        types = types.sort((type1, type2) => {
+            return consumptionByType[type2].percentage - consumptionByType[type1].percentage;
+        }).map((type) => {
+            return `${type}: ${consumptionByType[type].percentage}%`;
+        });
+
+        for(let i = 0; i < 4; i++){
+            const column = types.slice(i * 3, i * 3 + 3);
+            const scheme = d3.schemeCategory10.slice(i * 3, i * 3 + 3)
+
+            const scale = d3.scaleOrdinal().domain(column).range(scheme);
+            const legend = legendColor().scale(scale);
+
+            const svg = d3.select(this.refs.legend).append('svg').attr('width', 200);
+            svg.append('g').attr('class', 'legendOrdinal').attr('transform', 'translate(20, 20)');
+
+            svg.select('.legendOrdinal').call(legend);   
+        }     
+    }
+
     async buildRoomChart(){
         d3.select(this.refs.roomView).selectAll('*').remove();
         console.log("Chart " + this.state.view);
@@ -501,7 +762,7 @@ class GenerateChart extends React.PureComponent {
         const barHeight = 50;
         const height = Math.ceil((data.length + 0.1) * barHeight) + margin.top + margin.bottom;
         const width = 800;
-
+        
         const x = d3.scaleLinear().domain([0, d3.max(data, (point) => {
             return point.consumption;
         })]).range([margin.left, width - margin.right]);
@@ -539,6 +800,7 @@ class GenerateChart extends React.PureComponent {
         svg.append('g').call(xAxis);
         svg.append('g').call(yAxis);
     }
+
 
     renderWrappedWeekDay = (date, selectedDate, dayInCurrentMonth) => {
         const {classes} = this.props;
@@ -581,7 +843,9 @@ class GenerateChart extends React.PureComponent {
         });
 
         this.buildDeviceChart();
+        this.buildDevice1Chart();
         this.buildRoomChart();
+        //this.buildRoomChart1();
     }
 
     render(){
@@ -604,11 +868,26 @@ class GenerateChart extends React.PureComponent {
                     <SingleSelect className="chart__room-selector" label="Selecciona un escenario" value={this.state.room} options={[{label: 'Todos', value: -1}].concat(this.state.rooms)} onChange={(room) => this.handleRoomSelection(room)} style={this.state.tab === 0 ? {visibility: 'visible'} : {visibility: 'hidden'}}/>
                 </div>
                 <Tabs justified={true} onChange={(tab) => this.onTabChange(tab)}>
-                    <Tab value="pane-1" label="Dispositivos">
+                    <Tab value="pane-3" label="Datos">
+                        <div>
+                            {this.state.view === 'Mensual' ?
+                            <div className="chart">
+                                <div ref="month1View" className="chart__view"></div>
+                                <div ref="day1View" className="chart__day"></div>
+                            </div>
+                            :
+                            <div className="chart">
+                                <div ref="week1View" className="chart__view"></div>
+                            </div>
+                            }
+                            <div ref="legend1"></div>
+                        </div>
+                    </Tab>
+                    <Tab value="pane-1" label="Datos optimizados">
                         {!this.state.status ?
                         <div className="chart__error">
                             <img className="error-icon" src={require('../icons/sadface.png')} alt="Icon"/>
-                            No hay datos para el periodo seleccionado
+                            Los datos están cargando
                         </div>
                         :
                         <div>
@@ -630,6 +909,7 @@ class GenerateChart extends React.PureComponent {
                         <div ref="roomView" className="chart__view"></div>
                     </div>
                     </Tab>
+                    
                 </Tabs>
             </div>
         );
