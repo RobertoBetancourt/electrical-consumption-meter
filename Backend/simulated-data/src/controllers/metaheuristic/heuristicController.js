@@ -290,6 +290,7 @@ exports.optDevicesMonthly = async (req, res) => {
         fs.writeFileSync(`src/controllers/metaheuristic/input-data/Estado_Diciembre20.csv`, '\n' + state_data.toString(), {flag: 'a'});
 
         //Ejecución de la metaherística, esta generará el archivo de salida Consumo_PSO_Diciembre21.csvc
+        console.log('\nEmpezó la metaheurística\n');
         const executeHeuristic = () =>{
             return new Promise((resolve, reject) => {
                 exec("jupyter nbconvert --to notebook --execute src/controllers/metaheuristic/input-data/PSOConsumoDia.ipynb", (error, stdout, stderr) =>{
@@ -303,9 +304,9 @@ exports.optDevicesMonthly = async (req, res) => {
                 });
             });
         }
-        const helper = await executeHeuristic();
-        console.log(helper);
-        console.log('Terminó la heurística');
+        //const helper = await executeHeuristic();
+        //console.log(helper);
+        console.log('Terminó la metaheurística');
         var results = [];
 
         const optPath = path.join(__dirname, `/input-data/Consumo_PSO_Diciembre21.csv`);
