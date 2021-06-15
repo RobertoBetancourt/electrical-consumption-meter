@@ -64,18 +64,18 @@ exports.devicesMonthly = async (req, res) => {
                 case 13:
                     type = 'Cafeteras';
                     break;
-                case 14:
+                case 14: //simulados
                     type = 'Microondas';
                     break;
-                case 15:
+                case 15: //Reales
                     type = 'Calefactor';
                     arr = getData('calefactor');
                     break;
-                case 16:
+                case 16: //Reales
                     type = 'Secadora';
                     arr = getData('secadora')
                     break;
-                case 17:
+                case 17: //Reales
                     type = 'Ventilador';
                     arr = getData('ventilador');
                     break;
