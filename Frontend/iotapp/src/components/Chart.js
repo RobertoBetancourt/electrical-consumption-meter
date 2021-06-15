@@ -92,6 +92,7 @@ class GenerateChart extends React.PureComponent {
     }
 
     async buildDevice1Chart(){
+        console.log('Hello there');
         d3.select(this.refs.month1View).selectAll('*').remove();
         d3.select(this.refs.week1View).selectAll('*').remove();
 
@@ -303,6 +304,7 @@ class GenerateChart extends React.PureComponent {
     
 
     async buildDeviceChart(){
+        console.log('Hello there ahora si');
         d3.select(this.refs.monthView).selectAll('*').remove();
         d3.select(this.refs.weekView).selectAll('*').remove();
 
@@ -517,20 +519,16 @@ class GenerateChart extends React.PureComponent {
                 });
             }
         }else{
-            console.log(this.state.selectedWeek.format('YYYY-MM-DD'))
             let response = await fetch(`http://localhost:3001/groups/devicesWeekly?week=${this.state.selectedWeek.format('YYYY-MM-DD')}&room=${this.state.room}`);
-            console.log("response was %O", response);  
+
 
             if(response.status === 200){
-                console.log("Hola entre al if de weekly ");
 
                 response = await response.json();
-                
-                console.log("Todo bien");
+
                 this.setState({
                     status: true
                 });
-                console.log("Todo bien");
 
                 const {data, columns} = response;
                 const series = d3.stack().keys(columns.slice(1))(data).map((point) => {
@@ -595,7 +593,6 @@ class GenerateChart extends React.PureComponent {
 
                 this.buildLegend(data, columns.slice(1));
             }else{
-                console.log(response.status + "Say what");
                 this.setState({
                     status: false
                 });
@@ -738,18 +735,14 @@ class GenerateChart extends React.PureComponent {
 
     async buildRoomChart(){
         d3.select(this.refs.roomView).selectAll('*').remove();
-        console.log("Chart " + this.state.view);
         let data = [];
         
         if(this.state.view === "Mensual"){
-            console.log("Mensual entro");
             let response = await fetch(`http://localhost:3001/groups/roomsMonthly?month=${this.state.selectedMonth.format('YYYY-MM')}`);
             data = await response.json();
-            console.log("Mensual happens");
         }else{
             let response = await fetch(`http://localhost:3001/groups/roomsWeekly?week=${this.state.selectedWeek.format('YYYY-MM-DD')}`);
             data = await response.json();
-            console.log("Semanal happens");
         }
         
 
@@ -841,7 +834,7 @@ class GenerateChart extends React.PureComponent {
         this.setState({
             tab: tab
         });
-
+        console.log('Tab ' + this.state.tab);
         this.buildDeviceChart();
         this.buildDevice1Chart();
         this.buildRoomChart();
