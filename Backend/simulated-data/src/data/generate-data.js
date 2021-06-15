@@ -41,11 +41,13 @@ const generateData = async (offset) => {
                 console.log('Luz');
                 max = 10.5;
                 min = 10.5;
+                freq = 3;
             break;
             case 4:
                 console.log('Tv');
                 max = 75;
                 min = 3;
+                freq = 4;
             break;
             case 5:
                 console.log('Clima');
@@ -61,17 +63,20 @@ const generateData = async (offset) => {
                 console.log('Lavadora');
                 max = 895.5;
                 min = 895.5;
+                freq = 2;
             break; 
             case 8:
                 console.log('Licuadora');
                 max = 366.7;
                 min = 366.7;
                 freq = 4;
+                
             break; 
             case 9:
                 console.log('Modem');
                 max = 6;
                 min = 6;
+                on = true;
             break; 
             case 10:
                 console.log('CPU');
@@ -82,6 +87,7 @@ const generateData = async (offset) => {
                 console.log('Refri');
                 max = 2861.7;
                 min = 2861.7;
+                on = true;
             break; 
             case 12:
                 console.log('Asistente');
@@ -107,7 +113,12 @@ const generateData = async (offset) => {
         const record = [];
         let aux = freq;
         for(let hour = moment(start); hour.isBefore(end); hour = hour.add(1, 'hour')){
-            if(aux === 0){
+            if(on === true){
+                record.push({
+                    date: hour.toDate(),
+                    consumption: max
+                });
+            }else if(aux === 0){
                 record.push({
                     date: hour.toDate(),
                     consumption: 0.0

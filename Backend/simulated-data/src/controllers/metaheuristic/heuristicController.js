@@ -62,7 +62,7 @@ exports.optDevicesMonthly = async (req, res) => {
                     type = 'Luces';
                     break;
                 case 4: //Simulados
-                    type = 'Televisiones';
+                    type = 'Pantalla';
                     break;
                 case 5: //Reales
                     type = 'Aire';
@@ -79,7 +79,7 @@ exports.optDevicesMonthly = async (req, res) => {
                     type = 'Impresora';
                     break;
                 case 7: //Simulados
-                    type = 'Lavadoras';
+                    type = 'Lavadora';
                     break;
                 case 8: //Simulados
                     type = 'Licuadoras';
@@ -88,7 +88,7 @@ exports.optDevicesMonthly = async (req, res) => {
                     type = 'Computadoras';
                     break;
                 case 11: //Simulados
-                    type = 'Refrigeradores';
+                    type = 'Refrigerador';
                     break;
                 case 13: //Simulados
                     type = 'Cafeteras';
@@ -118,6 +118,7 @@ exports.optDevicesMonthly = async (req, res) => {
                     arr = getData('../../data/ventilador'); //Obtención de datos reales
                     break;
             }
+            
             if(!columns.includes(type)){
                 columns.push(type);
             }
@@ -151,7 +152,7 @@ exports.optDevicesMonthly = async (req, res) => {
                 
             });
         });
-        //console.log(records);
+        console.log(records);
 
         const consumption = {}
         //Se calculan la cantidad de tipos distintos de dispositivos
@@ -207,7 +208,8 @@ exports.optDevicesMonthly = async (req, res) => {
                 }
             )
         });
-       
+        
+        console.log(consumption);
         
         consumption['Dia'] = []; //Ultimo header
         var count = 0;
@@ -290,6 +292,7 @@ exports.optDevicesMonthly = async (req, res) => {
         fs.writeFileSync(`src/controllers/metaheuristic/input-data/Estado_Diciembre20.csv`, '\n' + state_data.toString(), {flag: 'a'});
 
         //Ejecución de la metaherística, esta generará el archivo de salida Consumo_PSO_Diciembre21.csvc
+        console.log('\nEmpezó la metaheurística\n');
         const executeHeuristic = () =>{
             return new Promise((resolve, reject) => {
                 exec("jupyter nbconvert --to notebook --execute src/controllers/metaheuristic/input-data/PSOConsumoDia.ipynb", (error, stdout, stderr) =>{
@@ -305,7 +308,7 @@ exports.optDevicesMonthly = async (req, res) => {
         }
         const helper = await executeHeuristic();
         console.log(helper);
-        console.log('Terminó la heurística');
+        console.log('Terminó la metaheurística');
         var results = [];
 
         const optPath = path.join(__dirname, `/input-data/Consumo_PSO_Diciembre21.csv`);
