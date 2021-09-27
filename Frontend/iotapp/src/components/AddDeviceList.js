@@ -1,27 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import AddDevice from './AddDevice';
-import { connect } from 'react-redux';
+import React from 'react'
+import PropTypes from 'prop-types'
+import AddDevice from './AddDevice'
+import { connect } from 'react-redux'
 
-export function PureAddDeviceList({addDevices}) {
-
+export function PureAddDeviceList ({ addDevices }) {
   return (
-    <div className="add-list">
-       
-        {addDevices.map(addDevice => (
-            <AddDevice key={addDevice.id} addDevice={addDevice} />
-        ))}    
+    <div className='add-list'>
+
+      {addDevices.map(addDevice => (
+        <AddDevice key={addDevice.id} addDevice={addDevice} />
+      ))}
     </div>
 
-  );
+  )
 }
 
 PureAddDeviceList.propTypes = {
-    addDevices: PropTypes.arrayOf(AddDevice.propTypes.addDevice).isRequired,
-  };
+  addDevices: PropTypes.arrayOf(AddDevice.propTypes.addDevice).isRequired
+}
 
-  export default connect(
-    ({ addDevices }) => ({
-      addDevices: addDevices,
-    }),
-  )(PureAddDeviceList);
+export default connect(
+  ({ addDevices }) => ({
+    addDevices: addDevices
+  })
+)(PureAddDeviceList)

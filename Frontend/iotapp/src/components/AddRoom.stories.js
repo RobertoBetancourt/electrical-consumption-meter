@@ -1,12 +1,12 @@
-import React from 'react';
-import { storiesOf } from '@storybook/react';
-import { action, decorate } from '@storybook/addon-actions';
-import { withKnobs, text, boolean, number} from "@storybook/addon-knobs";
-import AddButton from './AddDevice';
+import React from 'react'
+import { storiesOf } from '@storybook/react'
+import { action, decorate } from '@storybook/addon-actions'
+import { withKnobs, text, boolean, number } from '@storybook/addon-knobs'
+import AddButton from './AddDevice'
 
 export const addButton = {
-   name: 'Nuevo cuarto',
-};
+  name: 'Nuevo cuarto'
+}
 
 storiesOf('Add Button', module)
-  .add('default', () => <AddButton addButton={{ ...addButton}} />)
+  .add('default', () => <AddButton addButton={{ ...addButton }} />)

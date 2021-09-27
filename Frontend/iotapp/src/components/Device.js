@@ -1,150 +1,151 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Popup from 'reactjs-popup';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Popup from 'reactjs-popup'
 
-export default function Device({ device: { id, type, name, state }, offDevice, disabledDevice }){
-  var icon_type = "otro"
-  var device_type = JSON.stringify(type);
-
+export default function Device ({ device: { id, type, name, state }, offDevice, disabledDevice }) {
+  let icon_type = 'otro'
+  const device_type = JSON.stringify(type)
 
   switch (device_type) {
-    case "1":
-      icon_type = "Bocina";
-      break;
-    case "2":
-      icon_type = "Consola";
-      break;
-    case "3":
-      icon_type = "Luz";
-      break;
-    case "4":
-      icon_type = "TV";
-      break;
-    case "5":
-      icon_type = "Clima";
-      break;
-    case "6":
-      icon_type = "Impresora";
-      break;
-    case "7":
-      icon_type = "Lavadora";
-      break;
-    case "8":
-      icon_type = "Licuadora";
-      break;
-    case "9":
-      icon_type = "Modem";
-      break;
-    case "10":
-      icon_type = "PC";
-       break;
-    case "11":
-      icon_type = "Refrigerador";
-      break;
-    case "12":
-      icon_type = "Asistente";
-      break;
-    case "13":
-      icon_type = "Cafetera";
-      break;
-    case "14":
-      icon_type = "Microondas";
-      break;
-    case "15":
-      icon_type = "Calefactor";
-      break;
-    case "16":
-      icon_type = "Secadora";
-      break;
-    case "17":
-      icon_type = "Ventilador";
-      break;
+    case '1':
+      icon_type = 'Bocina'
+      break
+    case '2':
+      icon_type = 'Consola'
+      break
+    case '3':
+      icon_type = 'Luz'
+      break
+    case '4':
+      icon_type = 'TV'
+      break
+    case '5':
+      icon_type = 'Clima'
+      break
+    case '6':
+      icon_type = 'Impresora'
+      break
+    case '7':
+      icon_type = 'Lavadora'
+      break
+    case '8':
+      icon_type = 'Licuadora'
+      break
+    case '9':
+      icon_type = 'Modem'
+      break
+    case '10':
+      icon_type = 'PC'
+      break
+    case '11':
+      icon_type = 'Refrigerador'
+      break
+    case '12':
+      icon_type = 'Asistente'
+      break
+    case '13':
+      icon_type = 'Cafetera'
+      break
+    case '14':
+      icon_type = 'Microondas'
+      break
+    case '15':
+      icon_type = 'Calefactor'
+      break
+    case '16':
+      icon_type = 'Secadora'
+      break
+    case '17':
+      icon_type = 'Ventilador'
+      break
     default:
-      icon_type = "blank";
-      break;
+      icon_type = 'blank'
+      break
   }
 
-  function deleteDevice(id){
-    var request = new XMLHttpRequest();
+  function deleteDevice (id) {
+    const request = new XMLHttpRequest()
     request.onreadystatechange = (e) => {
       if (request.readyState !== 4) {
-        return;
+        return
       }
       if (request.status === 200) {
-        console.log('deleted', request.responseText);
-        refreshPage();
+        console.log('deleted', request.responseText)
+        refreshPage()
       } else {
-        console.warn('error');
+        console.warn('error')
       }
-    };
-    request.open('GET', 'http://localhost:5000/deleteDevice?id_device='+ id);
-    request.send(); 
+    }
+    request.open('GET', 'http://localhost:5000/deleteDevice?id_device=' + id)
+    request.send()
   }
 
-  function getType(type){
-    var device_type = JSON.stringify(type);
+  function getType (type) {
+    const device_type = JSON.stringify(type)
     switch (device_type) {
-      case "1":
-        icon_type = "Bocina";
-        break;
-      case "2":
-        icon_type = "Consola";
-        break;
-      case "3":
-        icon_type = "Luz";
-        break;
-      case "4":
-        icon_type = "TV";
-        break;  
+      case '1':
+        icon_type = 'Bocina'
+        break
+      case '2':
+        icon_type = 'Consola'
+        break
+      case '3':
+        icon_type = 'Luz'
+        break
+      case '4':
+        icon_type = 'TV'
+        break
       default:
-        icon_type = "blank";
-        break;
+        icon_type = 'blank'
+        break
     }
-    return icon_type;
+    return icon_type
   }
-  function refreshPage(){
-    window.location.reload(false);
+  function refreshPage () {
+    window.location.reload(false)
   }
   return (
     <div>
-    <Popup trigger={
-      <button className={`device-item ${state}`} >
-      <div class="terms">
-        <img className={`device-icon ${state}`} src={require('../icons/dispositivos/' + icon_type + '.png')} alt="Icon"/>
-        <h2 className="device-name"> {name} </h2>
-      </div>
-    </button>
-    } modal>
-      {close => (
-        <div className="modal-info">
-          <href className="close" onClick={close}>
-            &times;
-          </href> 
-          <div className="content">
-            <div class="terms">
-              <img className="icon-info" src={require('../icons/dispositivos/'+ icon_type +'.png')} alt="Icon"/>
-                Nombre: {name} <br></br>
-                Tipo: {getType(type)} <br></br>
-            </div> 
+      <Popup
+        trigger={
+          <button className={`device-item ${state}`}>
+            <div class='terms'>
+              <img className={`device-icon ${state}`} src={require('../icons/dispositivos/' + icon_type + '.png')} alt='Icon' />
+              <h2 className='device-name'> {name} </h2>
+            </div>
+          </button>
+    } modal
+      >
+        {close => (
+          <div className='modal-info'>
+            <href className='close' onClick={close}>
+              &times;
+            </href>
+            <div className='content'>
+              <div class='terms'>
+                <img className='icon-info' src={require('../icons/dispositivos/' + icon_type + '.png')} alt='Icon' />
+                Nombre: {name} <br />
+                Tipo: {getType(type)} <br />
+              </div>
+            </div>
+            <div className='actions'>
+              <button className='eliminar' onClick={() => { deleteDevice(id); close() }}> Eliminar </button>
+              <button className='modificar' onClick={close}> Modificar </button>
+            </div>
           </div>
-          <div className="actions">
-            <button className="eliminar" onClick={() => { deleteDevice(id); close();}}> Eliminar </button>
-            <button className="modificar" onClick={close}> Modificar </button>
-          </div>
-        </div>
-      )}
-    </Popup>
+        )}
+      </Popup>
     </div>
-  );
+  )
 }
 
 Device.propTypes = {
-    device: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      state: PropTypes.string.isRequired,
-    }),
-    offDevice: PropTypes.func,
-    disabledDevice: PropTypes.func,
-  };
+  device: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    state: PropTypes.string.isRequired
+  }),
+  offDevice: PropTypes.func,
+  disabledDevice: PropTypes.func
+}

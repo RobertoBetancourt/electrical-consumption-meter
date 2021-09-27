@@ -1,16 +1,14 @@
-import React from 'react';
-import './alerta.css';
+import React from 'react'
+import './alerta.css'
 
-const Alerta = ({alerta}) => {
- 
-    if (!alerta) {
-        return null;
-    }
+const Alerta = ({ alerta }) => {
+  if (!alerta) {
+    return null
+  }
 
-    return(
-        <div className={`alerta ${alerta.categoria}`}>{alerta.msg}</div>
-    )
-
+  return (
+    <div className={`alerta ${alerta.categoria}`}>{alerta.msg}</div>
+  )
 }
- 
-export default Alerta;
+
+export default Alerta

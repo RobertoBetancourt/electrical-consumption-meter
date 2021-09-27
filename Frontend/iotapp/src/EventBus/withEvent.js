@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import EventConsumer from "./EventConsumer";
+import React, { Component } from 'react'
+import EventConsumer from './EventConsumer'
 
-function withEvents(WrappedComponent) {
+function withEvents (WrappedComponent) {
   class WithEvents extends Component {
-    render() {
+    render () {
       return (
         <EventConsumer>
           {EventBus => <WrappedComponent EventBus={EventBus} {...this.props} />}
         </EventConsumer>
-      );
+      )
     }
   }
 
-  return WithEvents;
+  return WithEvents
 }
 
-export default withEvents;
+export default withEvents
