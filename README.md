@@ -1,110 +1,66 @@
 # Control del consumo eléctrico
 
-_Proyecto desarrollado por estudiantes del Tec de Monterrey para el control del consumo eléctrico de tus aparatos eléctricos dentro de tu casa u oficina._
+**Proyecto desarrollado por estudiantes del Tec de Monterrey para el control del consumo eléctrico de tus aparatos eléctricos dentro de tu casa u oficina.**
 
-## Comienzo 🚀
 
-_Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas._
+## Clonar proyecto
 
-### Pre-requisitos 📋
+**En el folder donde se desea clonar el proyecto:**
+git clone https://github.com/RobertoBetancourt/electrical-consumption-meter.git
 
-_Instalar mariaDB_
-```
-$ pip pip install mariadb
-```
 
-###### Entorno python
+## Instalaciones generales
 
-_Instalar flask_
-```
-$ pip install Flask
-```
-_Instalar flask cors_
-```
-$ pip install -U flask-cors
-```
-_Instalar Mysql connector_
-```
-$ pip install mysql-connector-python
-```
+**En el folder de electrical-consumption-meter:**
+		sudo apt update
+		sudo apt install mariadb-server
+		pip install Flask
+		pip install flask-jwt-extended
+		pip install -U flask-cors
+		pip install mysql-connector-python
 
-###### Entorno NodeJS
 
-_Instalar React_
-```
-> npm install --save react
-```
-_Instalar Storybook_
-```
-> npx -p @storybook/cli sb init
-```
-_Agregar dependencias_
-```
-> npm install @storybook/react --save-dev
-> npm install react react-dom --save
-> npm install babel-loader @babel/core --save-dev
-> npm install react-bootstrap bootstrap
-```
-_Paquetes de storybook_
-```
-> npm i -D @storybook/addon-actions
-> yarn add @storybook/addon-knobs --dev
-```
-_Pruebas automatizadas_
-```
-yarn add --dev @storybook/addon-storyshots react-test-renderer
-```
-_Para almacenar datos_
-```
-yarn add react-redux redux\
-```
-_Librería React Router_
-```
-npm install react-router-dom --save
-```
-_Instalar Material UI_
-```
-> npm install @material-ui/icons
-```
-### Instalación 🔧
+## Configuración de la base de datos
 
-_Una serie de ejemplos paso a paso que te dice lo que debes ejecutar para tener un entorno de desarrollo ejecutandose_
+**En el folder de electrical-consumption-meter:**
+		sudo mysql_secure_installation
+		sudo mysql -u root
+		USE mysql;
+		UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+		FLUSH PRIVILEGES;
+		exit;
 
-_Crear la base de datos dentro del entorno de MariaDB_
 
-```
-> mysql -u username -p < IotDB.sql
-```
+## Llenado de la base de datos
 
-_Iniciar interfaz_
-```
-> npm start
-```
+**En el folder de electrical-consumption-meter/Backend/DataBase:**
+		sudo mysql -u root < IotDB.sql
+		sudo mysql -u root < IotPA.sql
+		sudo mysql -u root < DefaultData.sql
 
-_Si hay problemas con las versiones_
-```
-> npm i -S core-js@2.5.7
-```
 
-## Construido con 🛠️
+## Configuración para la simulación de datos
 
-* [Anaconda](https://www.anaconda.com/) - Ambiente de python
-* [Material-UI](https://material-ui.com/es/components/icons/) - Iconos
-* [NodeJS](https://nodejs.org/es/download/) - Entorno
-* [React](https://es.reactjs.org/docs/getting-started.html) - Biblioteca JS
-* [Storybooks](https://storybook.js.org/docs/guides/guide-react/) - Componentes UI 
-* [Xampp](https://www.apachefriends.org/index.html) - Gestión de bases de datos
+**En el folder de electrical-consumption-meter/Backend/simulated-data:**
+		npm install
+		npm start
+
+
+## Configuración de API para manejo de usuarios
+
+**En el folder de electrical-consumption-meter/Backend/API:**
+		export FLASK_APP=app
+		export FLASK_ENV=development
+		flask run
+
+## Configuración del front-end:
+
+**En el folder de electrical-consumption-meter/Frontend/iotapp:**
+		npm install
+		npm start
+
 
 ## Documentación extra
 
 * [Balsamiq](https://balsamiq.cloud/s7tpyzs/pvvjfkp/rFA12) - Mockups
 * [Figma](https://www.figma.com/files/team/837081687303525522/ProyectoIntegrador) - Sketch UI
-
-## Autores ✒️
-
-* **Maria Fernanda Hernández** - [FerEnriquez](https://github.com/FerEnriquez)
-* **Benny Ruíz** - [BennyRJZ](https://github.com/BennyRJZ)
-* **Erick Ceredo** - 
-
-También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto. 
-
