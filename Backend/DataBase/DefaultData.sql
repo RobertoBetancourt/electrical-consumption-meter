@@ -1,4 +1,4 @@
-
+USE `IotDB` ;
 
 -- ADMINISTRADOR
 INSERT INTO admin (id_admin, name, email, password) VALUES(1,"Admin","admin@gmail.com", "password_test");

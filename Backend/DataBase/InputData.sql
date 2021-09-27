@@ -1,7 +1,8 @@
+USE `IotDB` ;
 -- ADMINISTRADOR
-INSERT INTO admin (id_admin, name, email, password) VALUES(1,"nombre_admin_test","email_admin_test", "password_test");
+INSERT INTO admin (id_admin, name, email, password) VALUES(1,"nombre_admin_test","email_admin_test@mail.com", "password_test");
 -- SCENARIO
-INSERT INTO `scenario` (`id_scenario`, `name`) VALUES
+INSERT INTO `scenario` (`id_scenario`, `name_scenario`) VALUES
 ('1', 'Oficina'),
 ('2', 'Juegos'),
 ('3', 'Linea Blanca'),

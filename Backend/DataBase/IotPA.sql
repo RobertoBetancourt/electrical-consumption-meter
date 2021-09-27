@@ -1,3 +1,4 @@
+USE `IotDB` ;
 --** PROCEDIMIENTOS ALMACENADOS **
 
 -- LoginAdministrador
