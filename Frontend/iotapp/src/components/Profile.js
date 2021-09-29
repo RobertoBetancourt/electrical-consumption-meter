@@ -95,7 +95,7 @@ class ProfileComponent extends React.Component {
     } else if (!isLoaded) {
       return (
         <div className='load-perfil'>
-          <div class='loader-perfil' />
+          <div className='loader-perfil' />
           Cargando <span>{textThatChanges}</span>...
                 </div>
       )
@@ -153,6 +153,7 @@ Profile.defaultProps = {
   loading: false
 }
 
+// todo fix all redux connects, create connector file to map state and dipatch to props, this implementation sucks
 export default connect(
   ({ users }) => ({
     users: users
