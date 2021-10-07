@@ -32,6 +32,11 @@ git clone https://github.com/RobertoBetancourt/electrical-consumption-meter.git
 	FLUSH PRIVILEGES;
 	exit;
 
+**If error**
+
+    mysql.server start
+
+
 
 ## Llenado de la base de datos
 
@@ -51,6 +56,10 @@ git clone https://github.com/RobertoBetancourt/electrical-consumption-meter.git
 
 
 ## Configuración de API para manejo de usuarios
+
+**En el archivo electrical-consumption-meter/BackendEnd/API/app:**
+    
+    cambiar credenciales de base de datos
 
 **En el folder de electrical-consumption-meter/Backend/API:**
 

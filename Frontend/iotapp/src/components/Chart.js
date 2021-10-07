@@ -20,10 +20,12 @@ class GenerateChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    const { shouldRenderCharts = false } = props;
     this.state = {
       view: "Mensual",
       tab: 0,
       room: -1,
+      shouldRenderCharts,
       selectedMonth: moment(),
       selectedWeek: moment().startOf("week"),
       status: true,
@@ -43,9 +45,12 @@ class GenerateChart extends React.PureComponent {
       }),
     });
 
-    this.buildDeviceChart();
-    this.buildDevice1Chart();
-    this.buildRoomChart();
+    if (this.state?.shouldRenderCharts) {
+      this.buildDeviceChart();
+      this.buildDevice1Chart();
+      this.buildRoomChart();
+    }
+
     //this.buildRoomChart1();
   }
 
@@ -55,9 +60,11 @@ class GenerateChart extends React.PureComponent {
         view,
       },
       () => {
-        this.buildDeviceChart();
-        this.buildDevice1Chart();
-        this.buildRoomChart();
+        if (this.state?.shouldRenderCharts) {
+          this.buildDeviceChart();
+          this.buildDevice1Chart();
+          this.buildRoomChart();
+        }
       }
     );
   }
@@ -68,9 +75,11 @@ class GenerateChart extends React.PureComponent {
         selectedMonth: month,
       },
       () => {
-        this.buildDeviceChart();
-        this.buildDevice1Chart();
-        this.buildRoomChart();
+        if (this.state?.shouldRenderCharts) {
+          this.buildDeviceChart();
+          this.buildDevice1Chart();
+          this.buildRoomChart();
+        }
         //this.buildRoomChart1();
       }
     );
@@ -96,8 +105,10 @@ class GenerateChart extends React.PureComponent {
         room,
       },
       () => {
-        this.buildDeviceChart();
-        this.buildDevice1Chart();
+        if (this.state?.shouldRenderCharts) {
+          this.buildDeviceChart();
+          this.buildDevice1Chart();
+        }
       }
     );
   }
@@ -108,7 +119,7 @@ class GenerateChart extends React.PureComponent {
     d3.select(this.refs.week1View).selectAll("*").remove();
     let response = {};
 
-    if (this.state.view === "Mensual") {
+    if (this.state?.view === "Mensual") {
       try {
         response = await fetch(
           `http://localhost:3001/groups/devicesMonthly?month=${this.state.selectedMonth.format(
@@ -434,7 +445,6 @@ class GenerateChart extends React.PureComponent {
   }
 
   async buildDeviceChart() {
-    console.log("Hello there ahora si");
     d3.select(this.refs.monthView).selectAll("*").remove();
     d3.select(this.refs.weekView).selectAll("*").remove();
 
